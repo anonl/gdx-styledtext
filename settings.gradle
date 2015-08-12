@@ -1,0 +1,6 @@
+
+include ':styledtext-api'
+project(':styledtext-api').projectDir=new File('api')
+
+include ':styledtext-impl'
+project(':styledtext-impl').projectDir=new File('impl')

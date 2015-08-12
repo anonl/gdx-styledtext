@@ -1,0 +1,46 @@
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+    
+    version = '1.0'
+    ext {
+        gdxVersion = '1.6.1'
+        junitVersion = '4.12'
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+}
+
+project(":styledtext-api") {
+    apply plugin: "java"
+    
+    sourceCompatibility = 1.6
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+    
+    dependencies {
+    	testCompile "junit:junit:$junitVersion"
+    }
+}
+
+
+project(":styledtext-impl") {
+    apply plugin: "java"
+    
+    sourceCompatibility = 1.6
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+    
+    dependencies {
+        compile project(':styledtext-api')
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"        
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"        
+
+    	testCompile "junit:junit:$junitVersion"
+        testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+		testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
