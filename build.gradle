@@ -1,9 +1,15 @@
 
 plugins {
-  id 'net.researchgate.release' version '2.2.0'
+    id "com.jfrog.bintray" version "1.2"
 }
 
 allprojects {
+    apply plugin: "maven-publish"
+    group = 'nl.weeaboo.gdx-styledtext'
+    version = '1.0'
+}
+
+subprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
     
@@ -16,7 +22,7 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-    }
+    }    
 }
 
 project(":styledtext-api") {
@@ -29,7 +35,6 @@ project(":styledtext-api") {
     	testCompile "junit:junit:$junitVersion"
     }
 }
-
 
 project(":styledtext-impl") {
     apply plugin: "java"
@@ -45,5 +50,33 @@ project(":styledtext-impl") {
     	testCompile "junit:junit:$junitVersion"
         testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    }
+}
+
+publishing {
+    publications {
+        api(MavenPublication) {
+            from project(":styledtext-api").components.java
+            artifactId = 'styledtext-api'
+        }
+        impl(MavenPublication) {
+            from project(":styledtext-impl").components.java
+            artifactId = 'styledtext-impl'
+        }
+    }
+}
+
+bintray {	
+	user = System.getenv('BINTRAY_USER')
+	key = System.getenv('BINTRAY_KEY')
+	publications = ['api', 'impl']
+	pkg {
+		repo = 'gdx-styledtext'
+		name = 'gdx-styledtext'
+		licenses = ['Apache-2.0']
+		vcsUrl = 'https://github.com/anonl/gdx-styledtext.git'
+        version {
+            name = project.version
+        }
     }
 }
