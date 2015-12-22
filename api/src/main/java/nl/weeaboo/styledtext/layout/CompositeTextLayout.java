@@ -145,13 +145,14 @@ public class CompositeTextLayout implements ITextLayout {
     @Override
     public ITextLayout getLineRange(int startLine, int endLine) {
         CompositeTextLayout result = new CompositeTextLayout();
-        result.originY = getLineTop(startLine);
+        if (endLine > startLine) {
+            result.originY = getLineTop(startLine);
 
-        for (int lineNum = startLine; lineNum < endLine; lineNum++) {
-            Line line = getLine(lineNum);
-            result.addLine(getElements(line.glyphStart, line.glyphEnd), line.startY, line.endY);
+            for (int lineNum = startLine; lineNum < endLine; lineNum++) {
+                Line line = getLine(lineNum);
+                result.addLine(getElements(line.glyphStart, line.glyphEnd), line.startY, line.endY);
+            }
         }
-
         return result;
     }
 
