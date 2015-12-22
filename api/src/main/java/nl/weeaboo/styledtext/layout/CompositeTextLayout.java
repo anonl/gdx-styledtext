@@ -14,16 +14,27 @@ public class CompositeTextLayout implements ITextLayout {
      */
     private final List<Elem> elems = new ArrayList<Elem>();
 
+    /**
+     * Line information (line start/end, bounds, etc.)
+     */
+    private final List<Line> lines = new ArrayList<Line>();
+
     private int glyphCount;
     private float minX, minY, maxX, maxY;
 
-    public void add(Collection<ILayoutElement> elems) {
+    private float originY;
+
+    void addLine(Collection<ILayoutElement> elems, float startY, float endY) {
+        final int startGlyphIndex = glyphCount;
+
         for (ILayoutElement elem : elems) {
             add(elem);
         }
+
+        lines.add(new Line(startGlyphIndex, glyphCount, startY, endY));
     }
 
-    public void add(ILayoutElement elem) {
+    private void add(ILayoutElement elem) {
         int len = LayoutUtil.getGlyphCount(elem);
         int start = glyphCount;
         int end = start + len;
@@ -35,6 +46,11 @@ public class CompositeTextLayout implements ITextLayout {
         minY = Math.min(minY, elem.getY());
         maxX = Math.max(maxX, elem.getX() + elem.getLayoutWidth());
         maxY = Math.max(maxY, elem.getY() + elem.getLayoutHeight());
+    }
+
+    @Override
+    public float getOriginY() {
+        return originY;
     }
 
     @Override
@@ -54,8 +70,16 @@ public class CompositeTextLayout implements ITextLayout {
 
     @Override
     public Iterable<ILayoutElement> getElements() {
+        return getElements(0, glyphCount);
+    }
+
+    /** @return All layout elements that lie (partly) within the range {@code [glyphStart, glyphEnd)} */
+    private Collection<ILayoutElement> getElements(int glyphStart, int glyphEnd) {
         List<ILayoutElement> result = new ArrayList<ILayoutElement>();
         for (Elem elem : elems) {
+            if (elem.glyphEnd > glyphStart && elem.glyphStart <= glyphEnd) {
+
+            }
             result.add(elem.elem);
         }
         return result;
@@ -86,6 +110,71 @@ public class CompositeTextLayout implements ITextLayout {
             }
         }
         return null;
+    }
+
+    private Line getLine(int lineNum) {
+        if (lineNum < 0 || lineNum >= getLineCount()) {
+            throw new ArrayIndexOutOfBoundsException(lineNum);
+        }
+        return lines.get(lineNum);
+    }
+
+    @Override
+    public int getGlyphOffset(int line) {
+        if (line < 0) {
+            return 0;
+        } else if (line >= getLineCount()) {
+            return glyphCount;
+        }
+        return getLine(line).glyphStart;
+    }
+
+    @Override
+    public int getLineCount() {
+        return lines.size();
+    }
+
+    private float getLineTop(int line) {
+        return getLine(line).startY;
+    }
+
+    private float getLineBottom(int line) {
+        return getLine(line).endY;
+    }
+
+    @Override
+    public ITextLayout getLineRange(int startLine, int endLine) {
+        CompositeTextLayout result = new CompositeTextLayout();
+        result.originY = getLineTop(startLine);
+
+        for (int lineNum = startLine; lineNum < endLine; lineNum++) {
+            Line line = getLine(lineNum);
+            result.addLine(getElements(line.glyphStart, line.glyphEnd), line.startY, line.endY);
+        }
+
+        return result;
+    }
+
+    @Override
+    public float getTextHeight(int startLine, int endLine) {
+        return Math.abs(getLineBottom(endLine) - getLineTop(startLine));
+    }
+
+    private static class Line {
+
+        public final int glyphStart;
+        public final int glyphEnd;
+
+        public final float startY;
+        public final float endY;
+
+        public Line(int glyphStart, int glyphEnd, float startY, float endY) {
+            this.glyphStart = glyphStart;
+            this.glyphEnd = glyphEnd;
+            this.startY = startY;
+            this.endY = endY;
+        }
+
     }
 
     private static class Elem {

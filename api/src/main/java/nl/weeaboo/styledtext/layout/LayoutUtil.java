@@ -134,4 +134,21 @@ public final class LayoutUtil {
         return (bidiLevel & 1) != 0;
     }
 
+    public static int getVisibleLines(ITextLayout layout, int startLine, float maxHeight) {
+        final int lineCount = layout.getLineCount();
+        if (maxHeight <= 0) {
+            return lineCount;
+        }
+
+        startLine = Math.max(0, Math.min(lineCount, startLine));
+
+        int endLine = startLine;
+        while (endLine < lineCount && layout.getTextHeight(startLine, endLine) <= maxHeight) {
+            endLine++;
+        }
+
+        // Always show at least one line (prevents text from disappearing if its bounds are too small)
+        return Math.max(1, endLine - startLine);
+    }
+
 }
