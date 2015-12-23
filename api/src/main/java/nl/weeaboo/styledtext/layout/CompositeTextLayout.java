@@ -7,7 +7,7 @@ import java.util.List;
 import nl.weeaboo.styledtext.TextStyle;
 
 public class CompositeTextLayout implements ITextLayout {
-
+    
     /**
      * No assumptions are made about the visual layout of the text. These layout elements may span multiple
      * lines, switch directions, etc.

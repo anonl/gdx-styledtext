@@ -27,24 +27,10 @@ public final class MutableTextStyle extends AbstractTextStyle {
 		return new TextStyle(this);
 	}
 
-	protected static int packColorFloat(float r, float g, float b, float a) {
-		int ri = Math.max(0, Math.min(255, Math.round(255 * r)));
-		int gi = Math.max(0, Math.min(255, Math.round(255 * g)));
-		int bi = Math.max(0, Math.min(255, Math.round(255 * b)));
-		int ai = Math.max(0, Math.min(255, Math.round(255 * a)));
-		return (ai<<24)|(ri<<16)|(gi<<8)|(bi);
-	}
-
-    protected static int packColorInt(int r, int g, int b, int a) {
-        int ri = Math.max(0, Math.min(255, r));
-        int gi = Math.max(0, Math.min(255, g));
-        int bi = Math.max(0, Math.min(255, b));
-        int ai = Math.max(0, Math.min(255, a));
-        return (ai << 24) | (ri << 16) | (gi << 8) | (bi);
-    }
-
     public void extend(TextStyle ext) {
-        if (ext == null || equals(ext)) return;
+        if (ext == null || equals(ext)) {
+            return;
+        }
 
         extendProperties(properties, ext.properties);
 	}
@@ -77,13 +63,13 @@ public final class MutableTextStyle extends AbstractTextStyle {
 		setColor(r, g, b, 1);
 	}
 	public void setColor(float r, float g, float b, float a) {
-		setColor(packColorFloat(r, g, b, a));
+        setColor(TextColor.packColorFloat(r, g, b, a));
 	}
 	public void setColor(int r, int g, int b) {
 		setColor(r, g, b, 255);
 	}
 	public void setColor(int r, int g, int b, int a) {
-        setColor(packColorInt(r, g, b, a));
+        setColor(TextColor.packColorInt(r, g, b, a));
 	}
 	public void setColor(int argb) {
         setProperty(ETextAttribute.color, argb);
@@ -101,13 +87,13 @@ public final class MutableTextStyle extends AbstractTextStyle {
 		setOutlineColor(r, g, b, 1);
 	}
 	public void setOutlineColor(float r, float g, float b, float a) {
-		setOutlineColor(packColorFloat(r, g, b, a));
+        setOutlineColor(TextColor.packColorFloat(r, g, b, a));
 	}
 	public void setOutlineColor(int r, int g, int b) {
 		setOutlineColor(r, g, b, 255);
 	}
 	public void setOutlineColor(int r, int g, int b, int a) {
-        setOutlineColor(packColorInt(r, g, b, a));
+        setOutlineColor(TextColor.packColorInt(r, g, b, a));
 	}
 	public void setOutlineColor(int argb) {
         setProperty(ETextAttribute.outlineColor, argb);
@@ -116,13 +102,13 @@ public final class MutableTextStyle extends AbstractTextStyle {
 		setShadowColor(r, g, b, 1);
 	}
 	public void setShadowColor(float r, float g, float b, float a) {
-		setShadowColor(packColorFloat(r, g, b, a));
+        setShadowColor(TextColor.packColorFloat(r, g, b, a));
 	}
 	public void setShadowColor(int r, int g, int b) {
 		setShadowColor(r, g, b, 255);
 	}
 	public void setShadowColor(int r, int g, int b, int a) {
-        setShadowColor(packColorInt(r, g, b, a));
+        setShadowColor(TextColor.packColorInt(r, g, b, a));
 	}
 	public void setShadowColor(int argb) {
         setProperty(ETextAttribute.shadowColor, argb);

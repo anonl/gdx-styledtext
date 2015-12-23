@@ -13,14 +13,28 @@ final class CharArrayIterator implements CharacterIterator {
 
     private int pos;
 
+    /**
+     * @param chars The characters to iterate over. This array is not copied, so any changes in the array are
+     *        immediately reflected by this character iterator.
+     */
     public CharArrayIterator(char[] chars, int off, int len) {
+        if (chars == null) {
+            throw new NullPointerException("chars may not be null");
+        }
+        if (off < 0 || off > chars.length) {
+            throw new IllegalArgumentException("Invalid off: " + off + " for char[" + chars.length + "]");
+        }
+        if (len < 0 || off + len > chars.length) {
+            throw new IllegalArgumentException("Invalid len: " + len + " for char[" + chars.length + "], off=" + off);
+        }
+
         this.chars = chars;
         this.off = off;
         this.len = len;
     }
 
     @Override
-    public Object clone() {
+    public CharArrayIterator clone() {
         CharArrayIterator c = new CharArrayIterator(chars, off, len);
         c.pos = pos;
         return c;
@@ -69,7 +83,7 @@ final class CharArrayIterator implements CharacterIterator {
     @Override
     public char setIndex(int position) {
         if (position < 0 || position > len) {
-            throw new IllegalArgumentException("Invalid index");
+            throw new IllegalArgumentException("Invalid index: " + position + " (length=" + len + ")");
         }
         pos = position;
         return current();
