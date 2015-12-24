@@ -7,17 +7,7 @@ allprojects {
     apply plugin: "maven-publish"
     group = 'nl.weeaboo.gdx-styledtext'
     version = '1.1'
-}
-
-subprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
     
-    ext {
-        gdxVersion = '1.7.2'
-        junitVersion = '4.12'
-    }
-
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -25,29 +15,33 @@ subprojects {
     }    
 }
 
-project(":styledtext-api") {
+subprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
     apply plugin: "java"
     
-    sourceCompatibility = 1.6
+    ext {
+        gdxVersion = '1.7.2'
+        junitVersion = '4.12'
+    }
+    
+	sourceCompatibility = 1.6
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
     
-    dependencies {
+	dependencies {
     	testCompile "junit:junit:$junitVersion"
-    }
+    }            
+}
+
+project(":styledtext-api") {    
 }
 
 project(":styledtext-impl") {
-    apply plugin: "java"
-    
-    sourceCompatibility = 1.6
-    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-    
     dependencies {
         compile project(':styledtext-api')
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"        
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"        
 
-    	testCompile "junit:junit:$junitVersion"
         testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
 		testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
