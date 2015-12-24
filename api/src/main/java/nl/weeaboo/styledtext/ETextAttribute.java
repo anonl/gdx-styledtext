@@ -5,35 +5,57 @@ import java.util.Locale;
 
 public enum ETextAttribute {
 
-    fontName(String.class),
-    fontStyle(EFontStyle.class),
-    fontSize(Float.class),
-    align(ETextAlign.class),
-    color(Integer.class),
-    underline(Boolean.class),
-    outlineSize(Float.class),
-    outlineColor(Integer.class),
-    shadowColor(Integer.class),
-    shadowDx(Float.class),
-    shadowDy(Float.class),
-    speed(Float.class);
+    FONT_NAME("fontName", String.class),
+    FONT_STYLE("fontStyle", EFontStyle.class),
+    FONT_SIZE("fontSize", Float.class),
+    ALIGN("align", ETextAlign.class),
+    COLOR("color", Integer.class),
+    UNDERLINE("underline", Boolean.class),
+    OUTLINE_SIZE("outlineSize", Float.class),
+    OUTLINE_COLOR("outlineColor", Integer.class),
+    SHADOW_COLOR("shadowColor", Integer.class),
+    SHADOW_DX("shadowDx", Float.class),
+    SHADOW_DY("shadowDy", Float.class),
+    SPEED("speed", Float.class);
 
+    private final String id;
     private final Class<?> type;
 
-    private ETextAttribute(Class<? extends Serializable> type) {
+    private ETextAttribute(String id, Class<? extends Serializable> type) {
+        this.id = id;
         this.type = type;
     }
 
-    public boolean isValidType(Object val) {
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @return The enum value matching the given string representation, or {@code null} if no match is found.
+     *         The matching algorithm is case-sensitive.
+     */
+    public static ETextAttribute fromId(String str) {
+        for (ETextAttribute a : values()) {
+            if (a.getId().equals(str)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    boolean isValidType(Object val) {
         return val == null || type.isAssignableFrom(val.getClass());
     }
 
-    public Object extendValue(Object base, Object ext) {
-        if (base == null) return ext;
-        if (ext == null) return base;
+    Object extendValue(Object base, Object ext) {
+        if (base == null) {
+            return ext;
+        } else if (ext == null) {
+            return base;
+        }
 
         // Custom behavior for certain attributes
-        if (this == fontStyle) {
+        if (this == FONT_STYLE) {
             return EFontStyle.combine((EFontStyle)base, (EFontStyle)ext);
         }
 
@@ -41,17 +63,19 @@ public enum ETextAttribute {
         return ext;
     }
 
-    public Object fromString(String string) {
-        if (string == null) return null;
+    Object valueFromString(String string) {
+        if (string == null) {
+            return null;
+        }
 
         // By name
-        if (this == color || this == outlineColor || this == shadowColor) {
+        if (this == COLOR || this == OUTLINE_COLOR || this == SHADOW_COLOR) {
             int val = (int)(Long.parseLong(string, 16) & 0xFFFFFFFFL);
             if (string.length() < 8) {
                 val = 0xFF000000 | val;
             }
             return val;
-        } else if (this == fontName) {
+        } else if (this == FONT_NAME) {
             return string.toLowerCase(Locale.ROOT);
         }
 
@@ -88,14 +112,14 @@ public enum ETextAttribute {
         return null;
     }
 
-    public String toString(Object val) {
+    String valueToString(Object val) {
         if (val == null) {
             return null;
         }
 
-        if (this == color || this == outlineColor || this == shadowColor) {
+        if (this == COLOR || this == OUTLINE_COLOR || this == SHADOW_COLOR) {
             return String.format(Locale.ROOT, "%08x", (Integer)val);
-        } else if (this == fontName) {
+        } else if (this == FONT_NAME) {
             return String.valueOf(val).toLowerCase(Locale.ROOT);
         }
 

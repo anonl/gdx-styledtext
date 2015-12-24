@@ -16,7 +16,7 @@ public class MutableStyledText extends AbstractStyledText<MutableStyledText> {
         super(text, style);
     }
 
-    /** For internal use only */
+    /** For internal use only -- doesn't copy input arrays */
     MutableStyledText(int len, char[] text, int toff, TextStyle[] styles, int soff) {
         super(len, text, toff, styles, soff);
     }
@@ -54,7 +54,7 @@ public class MutableStyledText extends AbstractStyledText<MutableStyledText> {
     }
 
     private void ensureCapacity(int targetCapacity) {
-        int capacity = capacity();
+        int capacity = getCapacity();
         if (capacity >= targetCapacity) {
             return;
         }
@@ -74,22 +74,21 @@ public class MutableStyledText extends AbstractStyledText<MutableStyledText> {
         soff = 0;
     }
 
-    private int capacity() {
+    private int getCapacity() {
         return text.length - toff;
     }
 
     public void setStyle(TextStyle style) {
         setStyle(style, 0, len);
     }
-
     public void setStyle(TextStyle style, int index) {
         setStyle(style, index, index + 1);
     }
-
     public void setStyle(TextStyle style, int from, int to) {
         checkBounds(from, to);
 
         if (from + 1 == to) {
+            // Optimization for common case
             styles[soff + from] = style;
         } else {
             Arrays.fill(styles, soff + from, soff + to, style);

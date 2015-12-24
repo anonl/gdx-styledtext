@@ -10,7 +10,7 @@ import java.util.Arrays;
  */
 abstract class AbstractStyledText<S extends AbstractStyledText<S>> implements CharSequence, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     protected int len;
 
@@ -25,11 +25,13 @@ abstract class AbstractStyledText<S extends AbstractStyledText<S>> implements Ch
         text = str.toCharArray();
 
         styles = new TextStyle[len];
-        Arrays.fill(styles, style);
+        if (style != null) {
+            Arrays.fill(styles, style);
+        }
     }
 
     /**
-     * Note: Stores a reference to the supplied array args.
+     * For internal use only -- doesn't copy input arrays
      */
     AbstractStyledText(int len, char[] text, int toff, TextStyle[] styles, int soff) {
         this.len = len;
@@ -40,37 +42,42 @@ abstract class AbstractStyledText<S extends AbstractStyledText<S>> implements Ch
     }
 
     /**
+     * For internal use only -- doesn't copy input arrays
+     * <p>
      * Creates a new styled text object with the same type as this object.
      */
     abstract S newInstance(int len, char[] text, int toff, TextStyle[] styles, int soff);
 
     @Override
-    public int hashCode() {
-        return length();
+    public final int hashCode() {
+        int hash = 0;
+        for (int n = 0; n < len; n++) {
+            hash = 31 * hash + text[toff + n];
+        }
+        return hash;
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other) {
+    public final boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        }
-        if (!(other instanceof AbstractStyledText)) {
+        } else if (!(obj instanceof AbstractStyledText)) {
             return false;
         }
 
-        AbstractStyledText<?> stext = (AbstractStyledText<?>)other;
+        AbstractStyledText<?> other = (AbstractStyledText<?>)obj;
         int len = length();
-        if (len != stext.length()) {
+        if (len != other.length()) {
             return false;
         }
 
         for (int n = 0; n < len; n++) {
-            if (getChar(n) != stext.getChar(n)) {
+            if (getChar(n) != other.getChar(n)) {
                 return false;
             }
 
             TextStyle s0 = getStyle(n);
-            TextStyle s1 = stext.getStyle(n);
+            TextStyle s1 = other.getStyle(n);
             if (s0 != s1 && (s0 == null || !s0.equals(s1))) {
                 return false;
             }
@@ -119,8 +126,7 @@ abstract class AbstractStyledText<S extends AbstractStyledText<S>> implements Ch
      * @see #charAt(int)
      */
     public final char getChar(int index) {
-        checkBounds(index);
-        return text[toff + index];
+        return charAt(index);
     }
 
     /**
@@ -197,7 +203,7 @@ abstract class AbstractStyledText<S extends AbstractStyledText<S>> implements Ch
     }
 
     @Override
-    public CharSequence subSequence(int start, int end) {
+    public S subSequence(int start, int end) {
         return substring(start, end);
     }
 

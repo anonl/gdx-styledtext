@@ -82,7 +82,7 @@ public final class LayoutUtil {
 	}
 
     private static float getDuration(TextStyle style) {
-        if (style == null || !style.hasProperty(ETextAttribute.speed)) {
+        if (style == null || !style.hasProperty(ETextAttribute.SPEED)) {
             return 1f;
         }
         return 1f / style.getSpeed();

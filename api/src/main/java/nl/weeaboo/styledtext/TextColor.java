@@ -21,4 +21,8 @@ final class TextColor {
         return (ai << 24) | (ri << 16) | (gi << 8) | (bi);
     }
 
+    static boolean isTransparent(int argb) {
+        return (argb & 0xFF000000) == 0;
+    }
+
 }

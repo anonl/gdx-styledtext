@@ -5,6 +5,12 @@ import org.junit.Test;
 
 public class MirrorCharsTest {
 
+    /** Test what happens when a non-mirrorable character is passed to the function */
+    @Test
+    public void unmirrored() {
+        Assert.assertEquals('a', MirrorChars.getMirrorChar('a'));
+    }
+
     @Test
     public void parens() {
         assertMirror('(', ')');

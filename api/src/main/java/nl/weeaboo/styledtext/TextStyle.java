@@ -1,7 +1,5 @@
 package nl.weeaboo.styledtext;
 
-import java.util.Arrays;
-
 public final class TextStyle extends AbstractTextStyle {
 
     private static final long serialVersionUID = 1L;
@@ -32,35 +30,33 @@ public final class TextStyle extends AbstractTextStyle {
     }
 
     /**
+     * @throws StyleParseException If the string could not be parsed
      * @see AbstractTextStyle#toString()
      */
-    public static TextStyle fromString(String string) {
-        if (string == null) return null;
+    public static TextStyle fromString(String string) throws StyleParseException {
+        if (string.length() == 0) {
+            return TextStyle.defaultInstance();
+        }
 
         TextStyle style = new TextStyle();
 
-        String parts[] = string.split("\\|");
-        for (int n = 0; n < parts.length; n++) {
-            int index = parts[n].indexOf('=');
-
-            ETextAttribute key = null;
+        for (String part : string.split("\\|")) {
+            int index = part.indexOf('=');
             if (index < 0) {
-                ETextAttribute keys[] = ETextAttribute.values();
-                if (n >= 0 && n < keys.length) {
-                    key = keys[n];
-                }
-            } else {
-                String keyS = parts[n].substring(0, index).trim();
-                key = ETextAttribute.valueOf(keyS);
+                throw new StyleParseException("Segment doesn't contain a key=value pair: " + part);
             }
 
-            if (key != null) {
-                String valueS = parts[n].substring(index + 1).trim();
-                if (valueS.length() > 0) {
-                    Object value = key.fromString(valueS);
-                    if (value != null) {
-                        style.properties.put(key, value);
-                    }
+            String keyS = part.substring(0, index).trim();
+            ETextAttribute key = ETextAttribute.fromId(keyS);
+            if (key == null) {
+                throw new StyleParseException("Unknown attribute: " + keyS);
+            }
+
+            String valueS = part.substring(index + 1).trim();
+            if (valueS.length() > 0) {
+                Object value = key.valueFromString(valueS);
+                if (value != null) {
+                    style.properties.put(key, value);
                 }
             }
         }
@@ -73,8 +69,9 @@ public final class TextStyle extends AbstractTextStyle {
     }
 
     public static TextStyle extend(TextStyle base, TextStyle ext) {
-        if (ext == null) return base;
-        if (base == null || base.equals(ext)) {
+        if (ext == null) {
+            return base;
+        } else if (base == null || base.equals(ext)) {
             return ext; // Styles are equal, nothing to do
         }
 
@@ -85,8 +82,8 @@ public final class TextStyle extends AbstractTextStyle {
 
     public static void extend(TextStyle[] out, TextStyle[] base, TextStyle[] ext) {
         if (out.length != base.length || base.length != ext.length) {
-            throw new ArrayIndexOutOfBoundsException("Inconsistent lengths: out=" + out.length + ", base="
-                    + base.length + ", ext=" + ext.length);
+            throw new IllegalArgumentException(String.format(
+                    "Inconsistent lengths: out=%d, base=%d, ext=%d", out.length, base.length, ext.length));
         }
         extend(out, 0, base, 0, ext, 0, out.length);
     }
@@ -112,12 +109,6 @@ public final class TextStyle extends AbstractTextStyle {
             }
             out[roff++] = result;
         }
-    }
-
-    static TextStyle[] replicate(TextStyle style, int times) {
-        TextStyle[] result = new TextStyle[times];
-        Arrays.fill(result, style);
-        return result;
     }
 
 }

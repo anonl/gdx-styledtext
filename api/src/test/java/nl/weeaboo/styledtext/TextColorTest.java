@@ -1,8 +1,5 @@
 package nl.weeaboo.styledtext;
 
-import java.util.Locale;
-
-import org.junit.Assert;
 import org.junit.Test;
 
 public class TextColorTest {
@@ -23,16 +20,12 @@ public class TextColorTest {
 
     private void assertPacked(int expected, float r, float g, float b, float a) {
         int packed = TextColor.packColorFloat(r, g, b, a);
-        Assert.assertEquals(toHexString(expected), toHexString(packed));
+        TextColorTestUtil.assertColor(expected, packed);
     }
 
     private void assertPacked(int expected, int r, int g, int b, int a) {
         int packed = TextColor.packColorInt(r, g, b, a);
-        Assert.assertEquals(toHexString(expected), toHexString(packed));
-    }
-
-    private static String toHexString(int value) {
-        return String.format(Locale.ROOT, "%08x", value);
+        TextColorTestUtil.assertColor(expected, packed);
     }
 
 }

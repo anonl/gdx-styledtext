@@ -4,13 +4,10 @@ import java.text.CharacterIterator;
 
 public final class StyledText extends AbstractStyledText<StyledText> {
 
-    public static final StyledText EMPTY_STRING = new StyledText();
+    public static final StyledText EMPTY_STRING = new StyledText("");
 
     private static final long serialVersionUID = 1L;
 
-    private StyledText() {
-        this("");
-    }
     public StyledText(String text) {
         this(text, null);
     }
@@ -18,7 +15,7 @@ public final class StyledText extends AbstractStyledText<StyledText> {
         super(text, style);
     }
 
-    /** For internal use only */
+    /** For internal use only -- doesn't copy input arrays */
     StyledText(int len, char[] text, int toff, TextStyle[] styles, int soff) {
         super(len, text, toff, styles, soff);
     }
@@ -41,10 +38,7 @@ public final class StyledText extends AbstractStyledText<StyledText> {
     }
 
     public CharacterIterator getCharacterIterator(int from, int to) {
-        if (from < 0 || to < from || to > length()) {
-            throw new IllegalArgumentException("Invalid substring, from=" + from + " to=" + to);
-        }
-
+        checkBounds(from, to);
         return new CharArrayIterator(text, toff + from, to - from);
     }
 
