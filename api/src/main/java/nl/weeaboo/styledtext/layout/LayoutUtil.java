@@ -35,6 +35,7 @@ public final class LayoutUtil {
 
 	public static boolean hasMultipleStyles(StyledText stext) {
         if (stext.length() <= 1) {
+            // Text isn't long enough to be able to contain multiple styles
             return false;
         }
 

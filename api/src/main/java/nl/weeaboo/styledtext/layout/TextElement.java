@@ -31,7 +31,12 @@ public abstract class TextElement extends AbstractElement implements IGlyphSeque
         return LayoutUtil.isRightToLeftLevel(bidiLevel);
     }
 
-    /** @return The appropriate horizontal kerning offset when appending the given glyph to this text element */
-    public abstract float getKerning(int glyphId);
+    /**
+     * @param glyphId Glyph id, see {@link IGlyphSequence#getGlyphId(int)}
+     * @return The appropriate horizontal kerning offset when appending the given glyph to this text element
+     */
+    public float getKerning(int glyphId) {
+        return 0f;
+    }
 
 }

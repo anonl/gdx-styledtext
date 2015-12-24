@@ -7,7 +7,7 @@ import java.util.List;
 import nl.weeaboo.styledtext.TextStyle;
 
 public class CompositeTextLayout implements ITextLayout {
-    
+
     /**
      * No assumptions are made about the visual layout of the text. These layout elements may span multiple
      * lines, switch directions, etc.
@@ -77,10 +77,9 @@ public class CompositeTextLayout implements ITextLayout {
     private Collection<ILayoutElement> getElements(int glyphStart, int glyphEnd) {
         List<ILayoutElement> result = new ArrayList<ILayoutElement>();
         for (Elem elem : elems) {
-            if (elem.glyphEnd > glyphStart && elem.glyphStart <= glyphEnd) {
-
+            if (elem.glyphEnd > glyphStart && elem.glyphStart < glyphEnd) {
+                result.add(elem.elem);
             }
-            result.add(elem.elem);
         }
         return result;
     }
