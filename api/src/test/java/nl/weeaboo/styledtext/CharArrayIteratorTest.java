@@ -60,9 +60,9 @@ public class CharArrayIteratorTest {
     }
 
     @Test(expected = NullPointerException.class)
+    @SuppressWarnings("unused")
     public void arrayMustBeNonNull() {
-        @SuppressWarnings("unused")
-        CharArrayIterator itr = new CharArrayIterator(null, 0, 0);
+        new CharArrayIterator(null, 0, 0);
     }
 
     @Test
