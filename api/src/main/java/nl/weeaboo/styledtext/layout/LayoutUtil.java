@@ -1,6 +1,7 @@
 package nl.weeaboo.styledtext.layout;
 
 import java.text.Bidi;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,11 +91,11 @@ public final class LayoutUtil {
     }
 
     static float getKerningOffset(ILayoutElement a, ILayoutElement b) {
-        if (!(a instanceof TextElement) || !(b instanceof IGlyphSequence)) {
+        if (!(a instanceof ITextElement) || !(b instanceof IGlyphSequence)) {
             return 0f;
         }
 
-        TextElement textA = (TextElement)a;
+        ITextElement textA = (ITextElement)a;
         IGlyphSequence textB = (IGlyphSequence)b;
         if (textB.getGlyphCount() == 0) {
             return 0f;
@@ -119,8 +120,8 @@ public final class LayoutUtil {
         for (ILayoutElement elem : elems) {
             elemsArray[t] = elem;
             bidiLevels[t] = 0;
-            if (elem instanceof TextElement) {
-                TextElement textElem = (TextElement)elem;
+            if (elem instanceof ITextElement) {
+                ITextElement textElem = (ITextElement)elem;
                 bidiLevels[t] = (byte)textElem.getBidiLevel();
             }
             t++;
@@ -129,6 +130,17 @@ public final class LayoutUtil {
         Bidi.reorderVisually(bidiLevels, 0, elemsArray, 0, elemsArray.length);
 
         return Arrays.asList(elemsArray);
+    }
+
+    /** Filters layout elements by type */
+    static <T extends ILayoutElement> List<T> getLayoutElements(List<ILayoutElement> elems, Class<T> type) {
+        List<T> result = new ArrayList<T>(elems.size());
+        for (ILayoutElement elem : elems) {
+            if (type.isInstance(elem)) {
+                result.add(type.cast(elem));
+            }
+        }
+        return result;
     }
 
     public static boolean isRightToLeftLevel(int bidiLevel) {

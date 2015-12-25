@@ -15,7 +15,7 @@ public class MutableStyledTextTest {
         MutableStyledText mst = st.mutableCopy();
         mst.append(st);
 
-        assertEquals(st.concat(st), mst.immutableCopy());
+        assertEquals(StyledText.concat(st, st), mst.immutableCopy());
     }
 
     @Test

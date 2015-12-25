@@ -2,7 +2,7 @@ package nl.weeaboo.styledtext.layout;
 
 import nl.weeaboo.styledtext.ETextAlign;
 
-public abstract class TextElement extends AbstractElement implements IGlyphSequence {
+public abstract class TextElement extends AbstractElement implements ITextElement {
 
     private final ETextAlign align;
     private final int bidiLevel;
@@ -12,10 +12,12 @@ public abstract class TextElement extends AbstractElement implements IGlyphSeque
         this.bidiLevel = bidiLevel;
     }
 
+    @Override
     public final ETextAlign getAlign() {
         return align;
     }
 
+    @Override
     public abstract float getAscent();
 
     @Override
@@ -23,10 +25,12 @@ public abstract class TextElement extends AbstractElement implements IGlyphSeque
         return false;
     }
 
+    @Override
     public final int getBidiLevel() {
         return bidiLevel;
     }
 
+    @Override
     public final boolean isRightToLeft() {
         return LayoutUtil.isRightToLeftLevel(bidiLevel);
     }
@@ -35,6 +39,7 @@ public abstract class TextElement extends AbstractElement implements IGlyphSeque
      * @param glyphId Glyph id, see {@link IGlyphSequence#getGlyphId(int)}
      * @return The appropriate horizontal kerning offset when appending the given glyph to this text element
      */
+    @Override
     public float getKerning(int glyphId) {
         return 0f;
     }

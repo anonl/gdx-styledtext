@@ -37,7 +37,7 @@ final class TextLayoutAlgorithm implements RunHandler {
         float y = 0f;
         CompositeTextLayout compositeLayout = new CompositeTextLayout();
         for (LineLayout line : finishedLines) {
-            List<ILayoutElement> elems = line.layout(0f, y);
+            List<ITextElement> elems = line.layout(0f, y);
             // Note: layoutHeight isn't available until layout() is called
             float layoutHeight = line.getLayoutHeight();
             compositeLayout.addLine(elems, y, layoutHeight);
@@ -68,14 +68,8 @@ final class TextLayoutAlgorithm implements RunHandler {
         if (currentLine.fits(elem)) {
             currentLine.add(elem);
         } else {
-            if (elem.isWhitespace()) {
-                // Allow whitespace to overflow wrap width
-                currentLine.add(elem);
-                endLine();
-            } else {
-                endLine();
-                currentLine.add(elem);
-            }
+            endLine();
+            currentLine.add(elem);
         }
 
         if (rs.containsLineBreak) {
@@ -84,7 +78,7 @@ final class TextLayoutAlgorithm implements RunHandler {
     }
 
     private void endLine() {
-        if (currentLine != null && !currentLine.isEmpty()) {
+        if (!currentLine.isEmpty()) {
             finishedLines.add(currentLine);
             currentLine = new LineLayout(params);
         }
@@ -107,8 +101,8 @@ final class TextLayoutAlgorithm implements RunHandler {
         public void add(ILayoutElement elem) {
             elements.add(elem);
             layoutWidth += elem.getLayoutWidth();
-            if (elem instanceof TextElement) {
-                TextElement textElem = (TextElement)elem;
+            if (elem instanceof ITextElement) {
+                ITextElement textElem = (ITextElement)elem;
                 maxAscent = Math.max(maxAscent, textElem.getAscent());
                 if (textElem.getBidiLevel() != 0) {
                     isSimpleLTR = false;
@@ -117,6 +111,7 @@ final class TextLayoutAlgorithm implements RunHandler {
         }
 
         public boolean fits(ILayoutElement elem) {
+            // Allow whitespace to overflow the wrap width
             if (elem.isWhitespace() || params.wrapWidth < 0) {
                 return true;
             }
@@ -129,7 +124,7 @@ final class TextLayoutAlgorithm implements RunHandler {
             return layoutWidth + dx + elem.getLayoutWidth() <= params.wrapWidth;
         }
 
-        public List<ILayoutElement> layout(float x, float y) {
+        public List<ITextElement> layout(float x, float y) {
             removeTrailingWhitespace();
 
             List<SpacingElement> paddingElements = new ArrayList<SpacingElement>();
@@ -160,8 +155,8 @@ final class TextLayoutAlgorithm implements RunHandler {
             for (ILayoutElement elem : newElements) {
                 x += LayoutUtil.getKerningOffset(prev, elem);
 
-                if (elem instanceof TextElement) {
-                    TextElement text = (TextElement)elem;
+                if (elem instanceof ITextElement) {
+                    ITextElement text = (ITextElement)elem;
 
                     // TODO Only round y position if font.integer==true?
                     float dy = Math.round(maxAscent - text.getAscent());
@@ -176,7 +171,7 @@ final class TextLayoutAlgorithm implements RunHandler {
             }
 
             // Return elements in logical order, without the additional padding elements
-            return elements;
+            return LayoutUtil.getLayoutElements(elements, ITextElement.class);
         }
 
         /** Add padding wherever the horizontal layout switches */
@@ -186,8 +181,8 @@ final class TextLayoutAlgorithm implements RunHandler {
 
             int halign = defaultHAlign;
             for (ILayoutElement elem : elements) {
-                if (elem instanceof TextElement) {
-                    TextElement textElem = (TextElement)elem;
+                if (elem instanceof ITextElement) {
+                    ITextElement textElem = (ITextElement)elem;
                     int halign2 = textElem.getAlign().getHorizontalAlign(isRTL);
                     if (halign == 1 && halign2 == -1) {
                         // Don't add padding between elements that want to touch
@@ -195,8 +190,8 @@ final class TextLayoutAlgorithm implements RunHandler {
                         SpacingElement padding = new SpacingElement();
                         outElements.add(padding);
                         outSpacing.add(padding);
-                        halign = halign2;
                     }
+                    halign = halign2;
                 }
 
                 outElements.add(elem);

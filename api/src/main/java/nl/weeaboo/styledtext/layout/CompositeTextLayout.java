@@ -24,17 +24,17 @@ public class CompositeTextLayout implements ITextLayout {
 
     private float originY;
 
-    void addLine(Collection<ILayoutElement> elems, float startY, float endY) {
+    void addLine(Collection<ITextElement> elems, float startY, float endY) {
         final int startGlyphIndex = glyphCount;
 
-        for (ILayoutElement elem : elems) {
+        for (ITextElement elem : elems) {
             add(elem);
         }
 
         lines.add(new Line(startGlyphIndex, glyphCount, startY, endY));
     }
 
-    private void add(ILayoutElement elem) {
+    private void add(ITextElement elem) {
         int len = LayoutUtil.getGlyphCount(elem);
         int start = glyphCount;
         int end = start + len;
@@ -69,13 +69,13 @@ public class CompositeTextLayout implements ITextLayout {
     }
 
     @Override
-    public Iterable<ILayoutElement> getElements() {
+    public Iterable<ITextElement> getElements() {
         return getElements(0, glyphCount);
     }
 
     /** @return All layout elements that lie (partly) within the range {@code [glyphStart, glyphEnd)} */
-    private Collection<ILayoutElement> getElements(int glyphStart, int glyphEnd) {
-        List<ILayoutElement> result = new ArrayList<ILayoutElement>();
+    private Collection<ITextElement> getElements(int glyphStart, int glyphEnd) {
+        List<ITextElement> result = new ArrayList<ITextElement>();
         for (Elem elem : elems) {
             if (elem.glyphEnd > glyphStart && elem.glyphStart < glyphEnd) {
                 result.add(elem.elem);
@@ -179,11 +179,11 @@ public class CompositeTextLayout implements ITextLayout {
 
     private static class Elem {
 
-        public final ILayoutElement elem;
+        public final ITextElement elem;
         public final int glyphStart;
         public final int glyphEnd;
 
-        public Elem(ILayoutElement elem, int glyphStart, int glyphEnd) {
+        public Elem(ITextElement elem, int glyphStart, int glyphEnd) {
             this.elem = elem;
             this.glyphStart = glyphStart;
             this.glyphEnd = glyphEnd;
@@ -200,22 +200,14 @@ public class CompositeTextLayout implements ITextLayout {
          * @param glyphIndex Absolute glyph index
          */
         public int getGlyphId(int glyphIndex) {
-            if (elem instanceof IGlyphSequence) {
-                IGlyphSequence seq = (IGlyphSequence)elem;
-                return seq.getGlyphId(glyphIndex - glyphStart);
-            }
-            return 0;
+            return elem.getGlyphId(glyphIndex - glyphStart);
         }
 
         /**
          * @param glyphIndex Absolute glyph index
          */
         public TextStyle getGlyphStyle(int glyphIndex) {
-            if (elem instanceof IGlyphSequence) {
-                IGlyphSequence seq = (IGlyphSequence)elem;
-                return seq.getGlyphStyle(glyphIndex - glyphStart);
-            }
-            return null;
+            return elem.getGlyphStyle(glyphIndex - glyphStart);
         }
 
     }

@@ -1,6 +1,9 @@
 package nl.weeaboo.styledtext;
 
 import java.text.CharacterIterator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public final class StyledText extends AbstractStyledText<StyledText> {
 
@@ -40,6 +43,52 @@ public final class StyledText extends AbstractStyledText<StyledText> {
     public CharacterIterator getCharacterIterator(int from, int to) {
         checkBounds(from, to);
         return new CharArrayIterator(text, toff + from, to - from);
+    }
+
+    /**
+     * @return A new styled text object; this styled text concatenated with an unstyled string.
+     *
+     * @see #concat(StyledText...)
+     */
+    public StyledText concat(String text) {
+        return concat(this, new StyledText(text));
+    }
+
+    /**
+     * The first two arguments are explicit to make it make it impossible to mistake this function for an
+     * overload of {@link #concat(String)}.
+     *
+     * @see #concat(List)
+     */
+    public static StyledText concat(StyledText first, StyledText second, StyledText... more) {
+        List<StyledText> list = new ArrayList<StyledText>(2 + more.length);
+        list.add(first);
+        list.add(second);
+        Collections.addAll(list, more);
+        return concat(list);
+    }
+
+    /**
+     * Creates a new styled text object by concatenating the given strings.
+     */
+    public static StyledText concat(List<? extends AbstractStyledText<?>> stexts) {
+        int newLen = 0;
+        for (AbstractStyledText<?> st : stexts) {
+            newLen += st.length();
+        }
+
+        char[] newText = new char[newLen];
+        TextStyle[] newStyles = new TextStyle[newLen];
+
+        int t = 0;
+        for (AbstractStyledText<?> st : stexts) {
+            int stLen = st.length();
+            st.getChars(newText, t, stLen);
+            st.getStyles(newStyles, t, stLen);
+            t += stLen;
+        }
+
+        return new StyledText(newLen, newText, 0, newStyles, 0);
     }
 
 }

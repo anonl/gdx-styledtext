@@ -230,39 +230,4 @@ abstract class AbstractStyledText<S extends AbstractStyledText<S>> implements Ch
         return newInstance(to - from, text, toff + from, styles, soff + from);
     }
 
-    /**
-     * @return A new styled text object; this styled text concatenated with an unstyled string.
-     *
-     * @see #concat(StyledText...)
-     */
-    public S concat(String text) {
-        return concat(new StyledText(text));
-    }
-
-    /**
-     * Creates a new styled text object by concatenating this styled text with the given array of other styled
-     * text objects.
-     */
-    public S concat(AbstractStyledText<?>... stexts) {
-        int newLen = length();
-        for (AbstractStyledText<?> st : stexts) {
-            newLen += st.length();
-        }
-
-        char[] newText = new char[newLen];
-        TextStyle[] newStyles = new TextStyle[newLen];
-
-        int t = length();
-        getChars(newText, 0, t);
-        getStyles(newStyles, 0, t);
-        for (AbstractStyledText<?> st : stexts) {
-            int stLen = st.length();
-            st.getChars(newText, t, stLen);
-            st.getStyles(newStyles, t, stLen);
-            t += stLen;
-        }
-
-        return newInstance(newLen, newText, 0, newStyles, 0);
-    }
-
 }

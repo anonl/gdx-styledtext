@@ -5,7 +5,7 @@ package nl.weeaboo.styledtext.layout;
  */
 public interface ITextLayout extends IGlyphSequence {
 
-    Iterable<ILayoutElement> getElements();
+    Iterable<ITextElement> getElements();
 
     /**
      * The position of the y-origin to be used when rendering this layout. For example if a layout element has
