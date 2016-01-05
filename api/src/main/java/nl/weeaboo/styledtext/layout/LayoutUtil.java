@@ -156,7 +156,7 @@ public final class LayoutUtil {
         startLine = Math.max(0, Math.min(lineCount, startLine));
 
         int endLine = startLine;
-        while (endLine < lineCount && layout.getTextHeight(startLine, endLine) <= maxHeight) {
+        while (endLine < lineCount && layout.getTextHeight(startLine, endLine + 1) <= maxHeight) {
             endLine++;
         }
 
