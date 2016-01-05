@@ -157,7 +157,13 @@ public class CompositeTextLayout implements ITextLayout {
 
     @Override
     public float getTextHeight(int startLine, int endLine) {
-        return Math.abs(getLineBottom(endLine) - getLineTop(startLine));
+        if (endLine <= startLine) {
+            return 0f;
+        }
+
+        float startY = getLineTop(startLine);
+        float endY = getLineBottom(endLine - 1);
+        return Math.abs(endY - startY);
     }
 
     private static class Line {
