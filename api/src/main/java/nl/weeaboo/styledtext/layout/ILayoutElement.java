@@ -16,4 +16,6 @@ public interface ILayoutElement {
 
     boolean isWhitespace();
 
+    void setParameters(LayoutParameters params);
+
 }

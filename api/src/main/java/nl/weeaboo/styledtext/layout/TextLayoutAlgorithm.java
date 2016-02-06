@@ -103,6 +103,9 @@ final class TextLayoutAlgorithm implements RunHandler {
 
         public void add(ILayoutElement elem) {
             elements.add(elem);
+
+            elem.setParameters(params);
+
             layoutWidth += elem.getLayoutWidth();
             if (elem instanceof ITextElement) {
                 ITextElement textElem = (ITextElement)elem;
@@ -171,6 +174,8 @@ final class TextLayoutAlgorithm implements RunHandler {
                 x += elem.getLayoutWidth();
                 layoutWidth += elem.getLayoutWidth();
                 layoutHeight = Math.max(layoutHeight, elem.getLayoutHeight());
+
+                prev = elem;
             }
 
             // Return elements in logical order, without the additional padding elements

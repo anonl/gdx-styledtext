@@ -54,4 +54,8 @@ abstract class AbstractElement implements ILayoutElement {
         this.y = y;
     }
 
+    @Override
+    public void setParameters(LayoutParameters params) {
+    }
+
 }

@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.FloatArray;
 
 import nl.weeaboo.styledtext.MirrorChars;
 import nl.weeaboo.styledtext.TextStyle;
+import nl.weeaboo.styledtext.layout.LayoutParameters;
 import nl.weeaboo.styledtext.layout.TextElement;
 
 final class GdxTextElement extends TextElement {
@@ -24,10 +25,11 @@ final class GdxTextElement extends TextElement {
     private final float scaleXY;
 
     private GlyphLayout glyphLayout;
-    private float capHeight;
+    private float ascent; // Distance to baseline
     private int glyphCount;
+    private boolean ydown;
 
-    public GdxTextElement(CharSequence str, TextStyle style, int bidiLevel, BitmapFont font) {
+    public GdxTextElement(CharSequence str, TextStyle style, int bidiLevel, BitmapFont font, float scaleXY) {
         super(style.getAlign(), bidiLevel);
 
         this.style = style;
@@ -35,7 +37,7 @@ final class GdxTextElement extends TextElement {
 
         originalScaleX = font.getScaleX();
         originalScaleY = font.getScaleY();
-        scaleXY = GdxFontMetrics.getScale(style, font);
+        this.scaleXY = scaleXY;
 
         initGlyphLayout(str, style);
     }
@@ -57,11 +59,11 @@ final class GdxTextElement extends TextElement {
                 throw new IllegalArgumentException(
                         "Arguments result in a layout with multiple glyph runs: " + glyphLayout.runs.size);
             }
-            capHeight = font.getCapHeight();
+            ascent = font.getCapHeight() + font.getAscent();
 
             glyphCount = getGlyphCount(glyphLayout);
             setLayoutWidth(glyphLayout.width);
-            setLayoutHeight(glyphLayout.height);
+            setLayoutHeight(font.getLineHeight());
         }
         resetScale();
     }
@@ -84,6 +86,8 @@ final class GdxTextElement extends TextElement {
 
         applyScale();
         {
+            dy += (ydown ? font.getAscent() : -font.getAscent());
+
             if (visibleGlyphs < 0f || visibleGlyphs >= glyphCount) {
                 // Fully visible
                 font.draw(batch, glyphLayout, getX() + dx, getY() + dy);
@@ -189,7 +193,14 @@ final class GdxTextElement extends TextElement {
 
     @Override
     public float getAscent() {
-        return capHeight;
+        return ascent;
+    }
+
+    @Override
+    public void setParameters(LayoutParameters params) {
+        super.setParameters(params);
+
+        ydown = params.ydir > 0;
     }
 
 }

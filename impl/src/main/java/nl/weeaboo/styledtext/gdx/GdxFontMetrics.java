@@ -7,21 +7,27 @@ import nl.weeaboo.styledtext.layout.AbstractFontMetrics;
 import nl.weeaboo.styledtext.layout.ILayoutElement;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
 
-public class GdxFontMetrics extends AbstractFontMetrics {
+final class GdxFontMetrics extends AbstractFontMetrics {
 
     private final BitmapFont font;
+    private final float scaleXY;
 
-    public GdxFontMetrics(BitmapFont font, float scale) {
-        super(font.getData().spaceWidth * scale, font.getData().lineHeight * scale);
+    public GdxFontMetrics(BitmapFont font, float scaleXY) {
+        super(font.getSpaceWidth() * scaleXY, font.getLineHeight() * scaleXY);
 
         this.font = font;
+        this.scaleXY = scaleXY;
+    }
+
+    public float getPixelSize() {
+        return getSize(font);
     }
 
     @Override
     public ILayoutElement layoutText(CharSequence str, TextStyle style, int bidiLevel,
             LayoutParameters params) {
 
-        return new GdxTextElement(str, style, bidiLevel, font);
+        return new GdxTextElement(str, style, bidiLevel, font, scaleXY);
     }
 
     public static float getScale(TextStyle style, BitmapFont font) {

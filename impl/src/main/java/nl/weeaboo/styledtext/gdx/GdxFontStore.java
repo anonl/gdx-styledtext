@@ -18,8 +18,8 @@ public class GdxFontStore implements IFontStore {
 
     private final List<FontInfo> fonts = new ArrayList<FontInfo>();
 
-    public void registerFont(String name, EFontStyle style, BitmapFont font) {
-        fonts.add(new FontInfo(name, style, font));
+    public void registerFont(String name, EFontStyle style, BitmapFont font, int pixelSize) {
+        fonts.add(new FontInfo(name, style, font, pixelSize));
     }
 
     @Override
@@ -30,7 +30,7 @@ public class GdxFontStore implements IFontStore {
         }
 
         BitmapFont font = bestMatch.font;
-        return new GdxFontMetrics(font, GdxFontMetrics.getScale(style, font));
+        return new GdxFontMetrics(font, bestMatch.getScaleFor(style));
     }
 
     private FontInfo findFont(TextStyle style) {
@@ -71,11 +71,18 @@ public class GdxFontStore implements IFontStore {
         public final String name;
         public final EFontStyle style;
         public final BitmapFont font;
+        private final int nativePixelSize;
 
-        public FontInfo(String name, EFontStyle style, BitmapFont font) {
+        public FontInfo(String name, EFontStyle style, BitmapFont font, int nativePixelSize) {
             this.name = name;
             this.style = style;
             this.font = font;
+            this.nativePixelSize = nativePixelSize;
+        }
+
+        /** @return The amount of additional scaling required to reach the desired size */
+        public float getScaleFor(TextStyle style) {
+            return style.getFontSize() / nativePixelSize;
         }
 
     }
