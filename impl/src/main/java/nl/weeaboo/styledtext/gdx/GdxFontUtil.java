@@ -40,7 +40,11 @@ public final class GdxFontUtil {
         }
     }
 
-    public static BitmapFont[] load(String fontPath, int... sizes) throws IOException {
+    public static BitmapFont load(String fontPath, int size) throws IOException {
+        return load(fontPath, new int[] { size })[0];
+    }
+
+    public static BitmapFont[] load(String fontPath, int[] sizes) throws IOException {
         FileHandle fontFile = Gdx.files.internal(fontPath);
         if (!fontFile.exists()) {
             throw new FileNotFoundException(fontPath);

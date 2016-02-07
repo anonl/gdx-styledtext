@@ -39,9 +39,7 @@ public class TestFreeTypeFontStore extends GdxFontStore {
 
         String filename = "font/" + fontName + ".ttf";
         int size = Math.round(style.getFontSize());
-        for (BitmapFont font : GdxFontUtil.load(filename, size)) {
-            registerFont(fontName, style.getFontStyle(), font, size);
-        }
+        registerFont(fontName, style.getFontStyle(), GdxFontUtil.load(filename, size), size);
     }
 
     @Override
