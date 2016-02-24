@@ -30,6 +30,10 @@ public enum ETextAttribute {
         return id;
     }
 
+    public Class<?> getType() {
+        return type;
+    }
+
     /**
      * @return The enum value matching the given string representation, or {@code null} if no match is found.
      *         The matching algorithm is case-sensitive.
@@ -63,7 +67,7 @@ public enum ETextAttribute {
         return ext;
     }
 
-    Object valueFromString(String string) {
+    public Object valueFromString(String string) {
         if (string == null) {
             return null;
         }
