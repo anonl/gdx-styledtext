@@ -1,5 +1,6 @@
 package nl.weeaboo.gdx.test;
 
+import java.awt.GraphicsEnvironment;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -29,15 +30,20 @@ public class GdxIntegrationTestRunner extends BlockJUnit4ClassRunner {
     @Override
     public void run(final RunNotifier notifier) {
         EachTestNotifier testNotifier = new EachTestNotifier(notifier, getDescription());
-        try {
-            runInRenderThread(new Runnable() {
-                @Override
-                public void run() {
-                    GdxIntegrationTestRunner.super.run(notifier);
-                }
-            });
-        } catch (InterruptedException e) {
-            testNotifier.addFailure(e);
+        if (GraphicsEnvironment.isHeadless()) {
+            // Integration tests require a GL context, so they don't work in a headless env
+            testNotifier.fireTestIgnored();
+        } else {
+            try {
+                runInRenderThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        GdxIntegrationTestRunner.super.run(notifier);
+                    }
+                });
+            } catch (InterruptedException e) {
+                testNotifier.addFailure(e);
+            }
         }
     }
 
