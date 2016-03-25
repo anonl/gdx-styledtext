@@ -21,13 +21,13 @@ abstract class AbstractStyledText<S extends AbstractStyledText<S>> implements Ch
     protected int soff;
 
     protected AbstractStyledText(String str, TextStyle style) {
+        checkNotNull(style);
+
         len = str.length();
         text = str.toCharArray();
 
         styles = new TextStyle[len];
-        if (style != null) {
-            Arrays.fill(styles, style);
-        }
+        Arrays.fill(styles, style);
     }
 
     /**
@@ -109,6 +109,13 @@ abstract class AbstractStyledText<S extends AbstractStyledText<S>> implements Ch
         if (from > to) {
             throw new ArrayIndexOutOfBoundsException(to - from);
         }
+    }
+
+    protected final <T> T checkNotNull(T val) {
+        if (val == null) {
+            throw new NullPointerException("Value should not be null");
+        }
+        return val;
     }
 
     @Override

@@ -47,7 +47,7 @@ public class StyledTextTest {
         Assert.assertEquals("abcdefgh", concat.toString());
         // Check if styles are concatenated
         Assert.assertEquals(testData.fullStyle, concat.getStyle(0));
-        Assert.assertEquals(null, concat.getStyle(4));
+        Assert.assertEquals(TextStyle.defaultInstance(), concat.getStyle(4));
     }
 
     @Test

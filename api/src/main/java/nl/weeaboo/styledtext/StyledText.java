@@ -12,7 +12,7 @@ public final class StyledText extends AbstractStyledText<StyledText> {
     private static final long serialVersionUID = 1L;
 
     public StyledText(String text) {
-        this(text, null);
+        this(text, TextStyle.defaultInstance());
     }
     public StyledText(String text, TextStyle style) {
         super(text, style);

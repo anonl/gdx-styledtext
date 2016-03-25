@@ -10,7 +10,7 @@ public class MutableStyledText extends AbstractStyledText<MutableStyledText> {
         this("");
     }
     public MutableStyledText(String text) {
-        this(text, null);
+        this(text, TextStyle.defaultInstance());
     }
     public MutableStyledText(String text, TextStyle style) {
         super(text, style);
@@ -45,6 +45,8 @@ public class MutableStyledText extends AbstractStyledText<MutableStyledText> {
     }
 
     public void append(char c, TextStyle style) {
+        checkNotNull(style);
+
         int newLen = len + 1;
         ensureCapacity(newLen);
 
@@ -86,6 +88,7 @@ public class MutableStyledText extends AbstractStyledText<MutableStyledText> {
     }
     public void setStyle(TextStyle style, int from, int to) {
         checkBounds(from, to);
+        checkNotNull(style);
 
         if (from + 1 == to) {
             // Optimization for common case

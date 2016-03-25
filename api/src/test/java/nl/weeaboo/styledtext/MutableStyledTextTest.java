@@ -37,14 +37,14 @@ public class MutableStyledTextTest {
         assertEquals(mst, copy);
 
         // Ensure the copy is independent of the original
-        copy.setStyle(null);
+        copy.setStyle(TextStyle.defaultInstance());
         assertNotEquals(mst, copy);
     }
 
     @Test
     public void extendStyle() {
         MutableStyledText mst = st.mutableCopy();
-        mst.setStyle(null, 0);
+        mst.setStyle(TextStyle.defaultInstance(), 0);
         mst.extendStyle(newStyle);
 
         // Check that the style at every index has indeed been extended
@@ -61,7 +61,7 @@ public class MutableStyledTextTest {
     @Test
     public void setBaseStyle() {
         MutableStyledText mst = st.mutableCopy();
-        mst.setStyle(null, 0);
+        mst.setStyle(TextStyle.defaultInstance(), 0);
         mst.setStyle(newStyle, 1, mst.length());
         mst.setBaseStyle(fullStyle);
 
@@ -88,7 +88,7 @@ public class MutableStyledTextTest {
         assertNotEquals(mst, new StyledText("abd", fullStyle));
         // Equals works with substrings
         MutableStyledText sub = new MutableStyledText("*abc", fullStyle);
-        sub.setStyle(null, 0);
+        sub.setStyle(TextStyle.defaultInstance(), 0);
         sub = sub.substring(1);
         assertEquals(mst, sub);
     }
