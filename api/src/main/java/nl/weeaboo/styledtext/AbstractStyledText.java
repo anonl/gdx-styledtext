@@ -170,7 +170,7 @@ abstract class AbstractStyledText<S extends AbstractStyledText<S>> implements Ch
     }
 
     /**
-     * @see #getStyled(TextStyle[], int, int)
+     * @see #getStyles(TextStyle[], int, int)
      */
     protected final TextStyle[] getStyles() {
         TextStyle[] out = new TextStyle[len];

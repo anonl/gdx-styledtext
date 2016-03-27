@@ -48,7 +48,7 @@ public final class StyledText extends AbstractStyledText<StyledText> {
     /**
      * @return A new styled text object; this styled text concatenated with an unstyled string.
      *
-     * @see #concat(StyledText...)
+     * @see #concat(List)
      */
     public StyledText concat(String text) {
         return concat(this, new StyledText(text));

@@ -43,7 +43,7 @@ public enum EFontStyle {
      * Merges the two styles together, combining the bold and italic attributes of both styles.
      *
      * @param a First style, may be {@code null}.
-     * @param a Second style, may be {@code null}.
+     * @param b Second style, may be {@code null}.
      */
     public static EFontStyle combine(EFontStyle a, EFontStyle b) {
         if (a == null) return b;
