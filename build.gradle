@@ -6,7 +6,7 @@ plugins {
 allprojects {
     apply plugin: "maven-publish"
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '1.4.0'
+    version = '1.4.1'
     
     repositories {
         mavenCentral()
@@ -32,7 +32,12 @@ subprojects {
     
 	dependencies {
     	testCompile "junit:junit:$junitVersion"
-    }            
+    }
+    
+    task sourceJar(type: Jar) {
+        from sourceSets.main.allJava
+        classifier "sources"
+    }    
 }
 
 project(":styledtext-api") {    
@@ -53,12 +58,18 @@ project(":styledtext-impl") {
 publishing {
     publications {
         api(MavenPublication) {
-            from project(":styledtext-api").components.java
             artifactId = 'styledtext-api'
+
+            def proj = project(":styledtext-api")
+            from proj.components.java            
+            artifact(proj.sourceJar)            
         }
         impl(MavenPublication) {
-            from project(":styledtext-impl").components.java
             artifactId = 'styledtext-impl'
+
+            def proj = project(":styledtext-impl")
+            from proj.components.java            
+            artifact(proj.sourceJar)            
         }
     }
 }
