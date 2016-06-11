@@ -47,7 +47,7 @@ public enum ETextAttribute {
         return null;
     }
 
-    boolean isValidType(Object val) {
+    boolean isValidValue(Object val) {
         return val == null || type.isAssignableFrom(val.getClass());
     }
 

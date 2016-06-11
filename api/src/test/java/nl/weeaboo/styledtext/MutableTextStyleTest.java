@@ -88,20 +88,20 @@ public class MutableTextStyleTest {
 
         // Initially has no properties
         for (ETextAttribute attr : ETextAttribute.values()) {
-            Assert.assertFalse(mts.hasProperty(attr));
+            Assert.assertFalse(mts.hasAttribute(attr));
         }
 
         // Add and remove some properties
-        mts.setProperty(ETextAttribute.FONT_NAME, "test");
-        mts.setProperty(ETextAttribute.COLOR, 0xFF804020);
-        Assert.assertTrue(mts.hasProperty(ETextAttribute.FONT_NAME));
-        Assert.assertEquals("test", mts.getProperty(ETextAttribute.FONT_NAME, "ERROR"));
-        Assert.assertTrue(mts.hasProperty(ETextAttribute.COLOR));
-        TextColorTestUtil.assertColor(0xFF804020, (Integer)mts.getProperty(ETextAttribute.COLOR, 0));
+        mts.setAttribute(ETextAttribute.FONT_NAME, "test");
+        mts.setAttribute(ETextAttribute.COLOR, 0xFF804020);
+        Assert.assertTrue(mts.hasAttribute(ETextAttribute.FONT_NAME));
+        Assert.assertEquals("test", mts.getAttribute(ETextAttribute.FONT_NAME, "ERROR"));
+        Assert.assertTrue(mts.hasAttribute(ETextAttribute.COLOR));
+        TextColorTestUtil.assertColor(0xFF804020, (Integer)mts.getAttribute(ETextAttribute.COLOR, 0));
 
-        mts.removeProperty(ETextAttribute.COLOR);
-        Assert.assertFalse(mts.hasProperty(ETextAttribute.COLOR));
-        TextColorTestUtil.assertColor(0, (Integer)mts.getProperty(ETextAttribute.COLOR, 0));
+        mts.removeAttribute(ETextAttribute.COLOR);
+        Assert.assertFalse(mts.hasAttribute(ETextAttribute.COLOR));
+        TextColorTestUtil.assertColor(0, (Integer)mts.getAttribute(ETextAttribute.COLOR, 0));
     }
 
     /** Check the default value for each attribute */
@@ -136,7 +136,7 @@ public class MutableTextStyleTest {
         // Try to pass null for fontName
         mts = new MutableTextStyle(null, FONT_SIZE);
         // Font name property not set if null
-        Assert.assertFalse(mts.hasProperty(ETextAttribute.FONT_NAME));
+        Assert.assertFalse(mts.hasAttribute(ETextAttribute.FONT_NAME));
 
         // fontName/fontStyle/fontSize version
         mts = new MutableTextStyle(FONT_NAME, FONT_STYLE, FONT_SIZE);

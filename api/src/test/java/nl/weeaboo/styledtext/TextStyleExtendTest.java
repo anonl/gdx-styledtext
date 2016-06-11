@@ -16,12 +16,12 @@ public class TextStyleExtendTest {
         MutableTextStyle mts = new MutableTextStyle();
         mts.setFontName(FONT_NAME);
         Assert.assertEquals(FONT_NAME, mts.getFontName());
-        Assert.assertFalse(mts.hasProperty(ETextAttribute.FONT_SIZE));
+        Assert.assertFalse(mts.hasAttribute(ETextAttribute.FONT_SIZE));
 
         TextStyle ts = new TextStyle("othername", 10f);
         mts.extend(ts);
         Assert.assertEquals("othername", mts.getFontName());
-        Assert.assertTrue(mts.hasProperty(ETextAttribute.FONT_SIZE));
+        Assert.assertTrue(mts.hasAttribute(ETextAttribute.FONT_SIZE));
         Assert.assertEquals(10f, mts.getFontSize(), EPSILON);
     }
 
@@ -39,7 +39,7 @@ public class TextStyleExtendTest {
                 continue;
             }
 
-            Assert.assertEquals(fullStyle.getProperty(attr, null), extended.getProperty(attr, null));
+            Assert.assertEquals(fullStyle.getAttribute(attr, null), extended.getAttribute(attr, null));
         }
     }
 

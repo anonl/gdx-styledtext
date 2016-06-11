@@ -2,6 +2,10 @@ package nl.weeaboo.styledtext;
 
 public final class TextStyle extends AbstractTextStyle {
 
+    public static TextStyle BOLD = new TextStyle(ETextAttribute.FONT_STYLE, EFontStyle.BOLD);
+    public static TextStyle ITALIC = new TextStyle(ETextAttribute.FONT_STYLE, EFontStyle.ITALIC);
+    public static TextStyle BOLD_ITALIC = new TextStyle(ETextAttribute.FONT_STYLE, EFontStyle.BOLD_ITALIC);
+
     private static final long serialVersionUID = 1L;
     private static final TextStyle DEFAULT_INSTANCE = new TextStyle();
 
@@ -15,6 +19,14 @@ public final class TextStyle extends AbstractTextStyle {
 
     public TextStyle(String fontName, EFontStyle fontStyle, float fontSize) {
         super(fontName, fontStyle, fontSize);
+    }
+
+    public TextStyle(ETextAttribute attr, Object value) {
+        this();
+
+        if (attr.isValidValue(value)) {
+            attributes.put(attr, value);
+        }
     }
 
     TextStyle(AbstractTextStyle m) {
@@ -56,7 +68,7 @@ public final class TextStyle extends AbstractTextStyle {
             if (valueS.length() > 0) {
                 Object value = key.valueFromString(valueS);
                 if (value != null) {
-                    style.properties.put(key, value);
+                    style.attributes.put(key, value);
                 }
             }
         }
@@ -76,7 +88,7 @@ public final class TextStyle extends AbstractTextStyle {
         }
 
         TextStyle result = new TextStyle(base);
-        extendProperties(result.properties, ext.properties);
+        extendAttributes(result.attributes, ext.attributes);
         return result;
     }
 

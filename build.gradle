@@ -6,7 +6,7 @@ plugins {
 allprojects {
     apply plugin: "maven-publish"
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '1.4.1'
+    version = '1.4.2'
     
     repositories {
         mavenCentral()
@@ -21,7 +21,7 @@ subprojects {
     apply plugin: "java"
     
     ext {
-        gdxVersion = '1.9.2'
+        gdxVersion = '1.9.3'
         junitVersion = '4.12'
     }
     

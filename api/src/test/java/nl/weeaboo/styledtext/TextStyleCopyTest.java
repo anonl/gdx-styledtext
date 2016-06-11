@@ -33,7 +33,7 @@ public class TextStyleCopyTest {
         Assert.assertEquals(alpha, beta);
 
         // Assert that the two mutable styles are independent
-        alpha.removeProperty(ETextAttribute.ALIGN);
+        alpha.removeAttribute(ETextAttribute.ALIGN);
         Assert.assertNotEquals(alpha, beta);
     }
 

@@ -32,27 +32,43 @@ public final class MutableTextStyle extends AbstractTextStyle {
             return;
         }
 
-        extendProperties(properties, ext.properties);
+        extendAttributes(attributes, ext.attributes);
 	}
 
+    /**
+     * @deprecated Use {@link #removeAttribute(ETextAttribute)} instead.
+     */
+    @Deprecated
     public void removeProperty(ETextAttribute key) {
-		properties.remove(key);
+        removeAttribute(key);
+    }
+
+    public void removeAttribute(ETextAttribute key) {
+		attributes.remove(key);
 	}
 
+    /**
+     * @deprecated Use {@link #setAttribute(ETextAttribute, Object)} instead.
+     */
+    @Deprecated
     public void setProperty(ETextAttribute key, Object value) {
-		if (key.isValidType(value)) {
-			properties.put(key, value);
+        setAttribute(key, value);
+    }
+
+    public void setAttribute(ETextAttribute attr, Object value) {
+		if (attr.isValidValue(value)) {
+			attributes.put(attr, value);
 		}
 	}
 
     public void setFontName(String name) {
-        setProperty(ETextAttribute.FONT_NAME, name);
+        setAttribute(ETextAttribute.FONT_NAME, name);
 	}
 	public void setFontStyle(EFontStyle style) {
-        setProperty(ETextAttribute.FONT_STYLE, style);
+	    setAttribute(ETextAttribute.FONT_STYLE, style);
 	}
 	public void setFontSize(float size) {
-        setProperty(ETextAttribute.FONT_SIZE, size);
+	    setAttribute(ETextAttribute.FONT_SIZE, size);
 	}
 	public void setFont(String name, EFontStyle style, float size) {
 		setFontName(name);
@@ -72,16 +88,16 @@ public final class MutableTextStyle extends AbstractTextStyle {
         setColor(TextColor.packColorInt(r, g, b, a));
 	}
 	public void setColor(int argb) {
-        setProperty(ETextAttribute.COLOR, argb);
+	    setAttribute(ETextAttribute.COLOR, argb);
 	}
 	public void setAlign(ETextAlign a) {
-        setProperty(ETextAttribute.ALIGN, a);
+	    setAttribute(ETextAttribute.ALIGN, a);
 	}
 	public void setUnderlined(boolean u) {
-        setProperty(ETextAttribute.UNDERLINE, u);
+	    setAttribute(ETextAttribute.UNDERLINE, u);
 	}
 	public void setOutlineSize(float s) {
-        setProperty(ETextAttribute.OUTLINE_SIZE, s);
+	    setAttribute(ETextAttribute.OUTLINE_SIZE, s);
 	}
 	public void setOutlineColor(float r, float g, float b) {
         setOutlineColor(r, g, b, 1f);
@@ -96,7 +112,7 @@ public final class MutableTextStyle extends AbstractTextStyle {
         setOutlineColor(TextColor.packColorInt(r, g, b, a));
 	}
 	public void setOutlineColor(int argb) {
-        setProperty(ETextAttribute.OUTLINE_COLOR, argb);
+	    setAttribute(ETextAttribute.OUTLINE_COLOR, argb);
 	}
 	public void setShadowColor(float r, float g, float b) {
         setShadowColor(r, g, b, 1f);
@@ -111,16 +127,16 @@ public final class MutableTextStyle extends AbstractTextStyle {
         setShadowColor(TextColor.packColorInt(r, g, b, a));
 	}
 	public void setShadowColor(int argb) {
-        setProperty(ETextAttribute.SHADOW_COLOR, argb);
+	    setAttribute(ETextAttribute.SHADOW_COLOR, argb);
 	}
 	public void setShadowDx(float dx) {
-        setProperty(ETextAttribute.SHADOW_DX, dx);
+	    setAttribute(ETextAttribute.SHADOW_DX, dx);
 	}
 	public void setShadowDy(float dy) {
-        setProperty(ETextAttribute.SHADOW_DY, dy);
+	    setAttribute(ETextAttribute.SHADOW_DY, dy);
 	}
 	public void setSpeed(float spd) {
-        setProperty(ETextAttribute.SPEED, spd);
+	    setAttribute(ETextAttribute.SPEED, spd);
 	}
 
 }

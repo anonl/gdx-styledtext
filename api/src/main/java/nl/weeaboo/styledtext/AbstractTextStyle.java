@@ -11,7 +11,7 @@ abstract class AbstractTextStyle implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final float EPSILON = .001f;
 
-    protected final Map<ETextAttribute, Object> properties =
+    protected final Map<ETextAttribute, Object> attributes =
             new EnumMap<ETextAttribute, Object>(ETextAttribute.class);
 
     protected AbstractTextStyle() {
@@ -25,21 +25,21 @@ abstract class AbstractTextStyle implements Serializable {
         this();
 
         if (fontName != null) {
-            properties.put(ETextAttribute.FONT_NAME, fontName);
+            attributes.put(ETextAttribute.FONT_NAME, fontName);
         }
         if (fontStyle != null) {
-            properties.put(ETextAttribute.FONT_STYLE, fontStyle);
+            attributes.put(ETextAttribute.FONT_STYLE, fontStyle);
         }
-        properties.put(ETextAttribute.FONT_SIZE, fontSize);
+        attributes.put(ETextAttribute.FONT_SIZE, fontSize);
     }
 
     protected AbstractTextStyle(AbstractTextStyle m) {
-        properties.putAll(m.properties);
+        attributes.putAll(m.attributes);
     }
 
     @Override
     public final int hashCode() {
-        return properties.hashCode();
+        return attributes.hashCode();
     }
 
     @Override
@@ -51,13 +51,13 @@ abstract class AbstractTextStyle implements Serializable {
         }
 
         AbstractTextStyle other = (AbstractTextStyle)obj;
-        return properties.equals(other.properties);
+        return attributes.equals(other.attributes);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Entry<ETextAttribute, Object> entry : properties.entrySet()) {
+        for (Entry<ETextAttribute, Object> entry : attributes.entrySet()) {
             ETextAttribute key = entry.getKey();
             String value = key.valueToString(entry.getValue());
             if (value != null) {
@@ -70,41 +70,57 @@ abstract class AbstractTextStyle implements Serializable {
         return sb.toString();
     }
 
+    /**
+     * @deprecated Use {@link #hasAttribute(ETextAttribute)} instead.
+     */
+    @Deprecated
     public boolean hasProperty(ETextAttribute key) {
-        return properties.containsKey(key);
+        return hasAttribute(key);
     }
 
+    public boolean hasAttribute(ETextAttribute attr) {
+        return attributes.containsKey(attr);
+    }
+
+    /**
+     * @deprecated Use {@link #getAttribute(ETextAttribute, Object)} instead.
+     */
+    @Deprecated
     public Object getProperty(ETextAttribute key, Object fallback) {
-        Object val = properties.get(key);
-        return (val != null ? val : fallback);
+        return getAttribute(key, fallback);
+    }
+
+    public Object getAttribute(ETextAttribute attr, Object defaultValue) {
+        Object val = attributes.get(attr);
+        return (val != null ? val : defaultValue);
     }
 
     public String getFontName() {
         return getFontName(null);
     }
     public String getFontName(String fallback) {
-        return (String)getProperty(ETextAttribute.FONT_NAME, fallback);
+        return (String)getAttribute(ETextAttribute.FONT_NAME, fallback);
     }
 
     public EFontStyle getFontStyle() {
         return getFontStyle(EFontStyle.PLAIN);
     }
     public EFontStyle getFontStyle(EFontStyle fallback) {
-        return (EFontStyle)getProperty(ETextAttribute.FONT_STYLE, fallback);
+        return (EFontStyle)getAttribute(ETextAttribute.FONT_STYLE, fallback);
     }
 
     public float getFontSize() {
         return getFontSize(12f);
     }
     public float getFontSize(float fallback) {
-        return (Float)getProperty(ETextAttribute.FONT_SIZE, fallback);
+        return (Float)getAttribute(ETextAttribute.FONT_SIZE, fallback);
     }
 
     public ETextAlign getAlign() {
         return getAlign(ETextAlign.NORMAL);
     }
     public ETextAlign getAlign(ETextAlign fallback) {
-        return (ETextAlign)getProperty(ETextAttribute.ALIGN, fallback);
+        return (ETextAlign)getAttribute(ETextAttribute.ALIGN, fallback);
     }
 
     /**
@@ -117,56 +133,56 @@ abstract class AbstractTextStyle implements Serializable {
      * @return The text color packed into an int ({@code AARRGGBB})
      */
     public int getColor(int fallback) {
-        return (Integer)getProperty(ETextAttribute.COLOR, fallback);
+        return (Integer)getAttribute(ETextAttribute.COLOR, fallback);
     }
 
     public boolean isUnderlined() {
         return isUnderlined(false);
     }
     public boolean isUnderlined(boolean fallback) {
-        return (Boolean)getProperty(ETextAttribute.UNDERLINE, fallback);
+        return (Boolean)getAttribute(ETextAttribute.UNDERLINE, fallback);
     }
 
     public float getOutlineSize() {
         return getOutlineSize(0f);
     }
     public float getOutlineSize(float fallback) {
-        return (Float)getProperty(ETextAttribute.OUTLINE_SIZE, fallback);
+        return (Float)getAttribute(ETextAttribute.OUTLINE_SIZE, fallback);
     }
 
     public int getOutlineColor() {
         return getOutlineColor(0);
     }
     public int getOutlineColor(int fallback) {
-        return (Integer)getProperty(ETextAttribute.OUTLINE_COLOR, fallback);
+        return (Integer)getAttribute(ETextAttribute.OUTLINE_COLOR, fallback);
     }
 
     public int getShadowColor() {
         return getShadowColor(0);
     }
     public int getShadowColor(int fallback) {
-        return (Integer)getProperty(ETextAttribute.SHADOW_COLOR, fallback);
+        return (Integer)getAttribute(ETextAttribute.SHADOW_COLOR, fallback);
     }
 
     public float getShadowDx() {
         return getShadowDx(0f);
     }
     public float getShadowDx(float fallback) {
-        return (Float)getProperty(ETextAttribute.SHADOW_DX, fallback);
+        return (Float)getAttribute(ETextAttribute.SHADOW_DX, fallback);
     }
 
     public float getShadowDy() {
         return getShadowDy(0f);
     }
     public float getShadowDy(float fallback) {
-        return (Float)getProperty(ETextAttribute.SHADOW_DY, fallback);
+        return (Float)getAttribute(ETextAttribute.SHADOW_DY, fallback);
     }
 
     public float getSpeed() {
         return getSpeed(1f);
     }
     public float getSpeed(float fallback) {
-        return (Float)getProperty(ETextAttribute.SPEED, fallback);
+        return (Float)getAttribute(ETextAttribute.SPEED, fallback);
     }
 
     public boolean hasOutline() {
@@ -180,7 +196,7 @@ abstract class AbstractTextStyle implements Serializable {
                 && !TextColor.isTransparent(getShadowColor());
     }
 
-    protected static void extendProperties(Map<ETextAttribute, Object> out, Map<ETextAttribute, Object> ext) {
+    protected static void extendAttributes(Map<ETextAttribute, Object> out, Map<ETextAttribute, Object> ext) {
         for (Entry<ETextAttribute, Object> entry : ext.entrySet()) {
             ETextAttribute key = entry.getKey();
             Object oldval = out.get(key);
