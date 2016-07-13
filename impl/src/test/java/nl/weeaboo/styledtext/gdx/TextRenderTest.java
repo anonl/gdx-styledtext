@@ -3,9 +3,6 @@ package nl.weeaboo.styledtext.gdx;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32_ITALIC;
 
-import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,21 +11,14 @@ import nl.weeaboo.gdx.test.GdxIntegrationTestRunner;
 import nl.weeaboo.gdx.test.GdxRenderTest;
 import nl.weeaboo.styledtext.MutableStyledText;
 import nl.weeaboo.styledtext.StyledText;
-import nl.weeaboo.styledtext.layout.ITextLayout;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
-import nl.weeaboo.styledtext.layout.LayoutUtil;
 
 @RunWith(GdxIntegrationTestRunner.class)
 public class TextRenderTest extends GdxRenderTest {
 
-    private TestFreeTypeFontStore fontStore;
-    private int pad = 4;
-
     @Before
     public void before() {
         // this.generate = true;
-
-        fontStore = new TestFreeTypeFontStore();
     }
 
     @Test
@@ -83,37 +73,6 @@ public class TextRenderTest extends GdxRenderTest {
 
         String text = "A A A A \nA\n A\n  A\n   A\n\tA";
         checkRenderResult("word-wrap", renderText(new StyledText(text, SERIF_32), -1f, params));
-    }
-
-    private void checkRenderResult(String filename, Rectangle r) {
-        checkRenderResult(filename, r.x, r.y, r.width, r.height);
-    }
-
-    private Rectangle renderText(StyledText text) {
-        return renderText(text, -1f);
-    }
-
-    private Rectangle renderText(StyledText text, float visibleChars) {
-        LayoutParameters params = new LayoutParameters();
-        return renderText(text, visibleChars, params);
-    }
-
-    private Rectangle renderText(StyledText text, float visibleChars, LayoutParameters params) {
-        ITextLayout layout = LayoutUtil.layout(fontStore, text, params);
-
-        float th = layout.getTextHeight();
-        float tw = layout.getTextWidth();
-
-        Rectangle bounds = new Rectangle2D.Float(0, 0, tw, th).getBounds();
-        bounds.grow(pad * 2, pad * 2);
-
-        clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
-
-        batch.begin();
-        GdxFontUtil.draw(batch, layout, pad, pad + th, visibleChars);
-        batch.end();
-
-        return bounds;
     }
 
 }

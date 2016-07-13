@@ -5,11 +5,13 @@ import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
+import nl.weeaboo.styledtext.TextStyle;
 import nl.weeaboo.styledtext.layout.ILayoutElement;
 import nl.weeaboo.styledtext.layout.ITextLayout;
 
@@ -40,12 +42,23 @@ public final class GdxFontUtil {
         }
     }
 
+    /** @deprecated Use */
+    @Deprecated
     public static BitmapFont load(String fontPath, int size) throws IOException {
         FileHandle fontFile = Gdx.files.internal(fontPath);
         return load(fontFile, new int[] { size })[0];
     }
-
+    /** @deprecated Use */
+    @Deprecated
     public static BitmapFont[] load(FileHandle fontFile, int[] sizes) throws IOException {
+        return load(fontFile, TextStyle.defaultInstance(), sizes);
+    }
+
+    public static BitmapFont load(String fontPath, TextStyle style, int size) throws IOException {
+        FileHandle fontFile = Gdx.files.internal(fontPath);
+        return load(fontFile, style, new int[] { size })[0];
+    }
+    public static BitmapFont[] load(FileHandle fontFile, TextStyle style, int[] sizes) throws IOException {
         if (!fontFile.exists()) {
             throw new FileNotFoundException(fontFile.toString());
         }
@@ -58,6 +71,13 @@ public final class GdxFontUtil {
                 FreeTypeFontParameter parameter = new FreeTypeFontParameter();
                 parameter.size = sizes[n];
 
+                parameter.borderColor = argb8888ToColor(style.getOutlineColor());
+                parameter.borderWidth = style.getOutlineSize();
+
+                parameter.shadowColor = argb8888ToColor(style.getShadowColor());
+                parameter.shadowOffsetX = Math.round(style.getShadowDx());
+                parameter.shadowOffsetY = Math.round(style.getShadowDy());
+
                 BitmapFont bmFont = generator.generateFont(parameter);
                 bmFont.setUseIntegerPositions(true);
                 result[n] = bmFont;
@@ -67,5 +87,11 @@ public final class GdxFontUtil {
         }
 
         return result;
+    }
+
+    static Color argb8888ToColor(int argb) {
+        Color color = new Color();
+        Color.argb8888ToColor(color, argb);
+        return color;
     }
 }

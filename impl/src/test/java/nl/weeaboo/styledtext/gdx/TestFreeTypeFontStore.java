@@ -33,20 +33,21 @@ public class TestFreeTypeFontStore extends GdxFontStore {
         return new TextStyle(fontName, size);
     }
 
-    private void register(TextStyle style) throws IOException {
+    void register(TextStyle style) throws IOException {
         String fontName = style.getFontName();
         Assert.assertNotNull(fontName);
 
         String filename = "font/" + fontName + ".ttf";
-        int size = Math.round(style.getFontSize());
-        registerFont(fontName, style.getFontStyle(), GdxFontUtil.load(filename, size), size);
+        int pixelSize = Math.round(style.getFontSize());
+        BitmapFont bitmapFont = GdxFontUtil.load(filename, style, pixelSize);
+        registerFont(style, bitmapFont, pixelSize);
     }
 
     @Override
-    public void registerFont(String name, EFontStyle style, BitmapFont font, int pixelSize) {
+    public void registerFont(TextStyle style, BitmapFont font, int pixelSize) {
         bitmapFonts.add(font);
 
-        super.registerFont(name, style, font, pixelSize);
+        super.registerFont(style, font, pixelSize);
     }
 
     @Override

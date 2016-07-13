@@ -1,5 +1,7 @@
 package nl.weeaboo.gdx.test;
 
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.nio.ByteBuffer;
 import java.util.Locale;
 
@@ -17,23 +19,65 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import nl.weeaboo.styledtext.StyledText;
+import nl.weeaboo.styledtext.gdx.GdxFontUtil;
+import nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore;
+import nl.weeaboo.styledtext.layout.ITextLayout;
+import nl.weeaboo.styledtext.layout.LayoutParameters;
+import nl.weeaboo.styledtext.layout.LayoutUtil;
+
 public class GdxRenderTest {
 
     protected boolean generate;
     protected SpriteBatch batch;
+    protected TestFreeTypeFontStore fontStore;
+
+    private final int pad = 4;
 
     private ShapeRenderer shapeRenderer;
 
     @Before
-    public void beforeRenderTest() {
+    public final void beforeRenderTest() {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
+        fontStore = new TestFreeTypeFontStore();
     }
 
     @After
-    public void afterRenderTest() {
+    public final void afterRenderTest() {
         batch.dispose();
         shapeRenderer.dispose();
+    }
+
+    protected void checkRenderResult(String filename, Rectangle r) {
+        checkRenderResult(filename, r.x, r.y, r.width, r.height);
+    }
+
+    protected Rectangle renderText(StyledText text) {
+        return renderText(text, -1f);
+    }
+
+    protected Rectangle renderText(StyledText text, float visibleChars) {
+        LayoutParameters params = new LayoutParameters();
+        return renderText(text, visibleChars, params);
+    }
+
+    protected Rectangle renderText(StyledText text, float visibleChars, LayoutParameters params) {
+        ITextLayout layout = LayoutUtil.layout(fontStore, text, params);
+
+        float th = layout.getTextHeight();
+        float tw = layout.getTextWidth();
+
+        Rectangle bounds = new Rectangle2D.Float(0, 0, tw, th).getBounds();
+        bounds.grow(pad * 2, pad * 2);
+
+        clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
+
+        batch.begin();
+        GdxFontUtil.draw(batch, layout, pad, pad + th, visibleChars);
+        batch.end();
+
+        return bounds;
     }
 
     protected void clearRect(int x, int y, int w, int h) {

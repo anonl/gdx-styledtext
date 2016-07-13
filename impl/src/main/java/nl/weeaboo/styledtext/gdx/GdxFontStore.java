@@ -12,14 +12,24 @@ import nl.weeaboo.styledtext.layout.IFontStore;
 
 public class GdxFontStore implements IFontStore {
 
-    private static final int SCORE_NAME  = 1000000;
-    private static final int SCORE_STYLE = 100000;
-    private static final int SCORE_SIZE  = 10000;
+    private static final int SCORE_NAME     = 1000000;
+    private static final int SCORE_STYLE    = 100000;
+    private static final int SCORE_SIZE     = 10000;
+    private static final int SCORE_OUTLINE  = 100;
+    private static final int SCORE_SHADOW   = 100;
 
     private final List<FontInfo> fonts = new ArrayList<FontInfo>();
 
+    /**
+     * @deprecated Use {@link #registerFont(TextStyle, BitmapFont, int)} instead.
+     */
+    @Deprecated
     public void registerFont(String name, EFontStyle style, BitmapFont font, int pixelSize) {
-        fonts.add(new FontInfo(name, style, font, pixelSize));
+        TextStyle ts = new TextStyle(name, style, pixelSize);
+        registerFont(ts, font, pixelSize);
+    }
+    public void registerFont(TextStyle style, BitmapFont font, int pixelSize) {
+        fonts.add(new FontInfo(style, font, pixelSize));
     }
 
     @Override
@@ -33,29 +43,54 @@ public class GdxFontStore implements IFontStore {
         return new GdxFontMetrics(font, bestMatch.getScaleFor(style));
     }
 
-    private FontInfo findFont(TextStyle style) {
+    private FontInfo findFont(TextStyle paramStyle) {
         int bestScore = Integer.MIN_VALUE;
         FontInfo bestInfo = null;
 
         for (FontInfo info : fonts) {
             int score = 0;
 
+            TextStyle infoStyle = info.style;
+
             // Check name
-            if (info.name.equalsIgnoreCase(style.getFontName())) {
+            if (infoStyle.getFontName().equalsIgnoreCase(paramStyle.getFontName())) {
                 score += SCORE_NAME;
             }
 
             // Check style
-            EFontStyle fontStyle = style.getFontStyle();
-            if (fontStyle.isItalic() == info.style.isItalic()) {
+            EFontStyle fontStyle = paramStyle.getFontStyle();
+            if (fontStyle.isItalic() == infoStyle.getFontStyle().isItalic()) {
                 score += SCORE_STYLE;
             }
-            if (fontStyle.isBold() == info.style.isBold()) {
+            if (fontStyle.isBold() == infoStyle.getFontStyle().isBold()) {
                 score += SCORE_STYLE;
             }
 
             // Check size
-            score -= SCORE_SIZE * Math.abs(GdxFontMetrics.getScale(style, info.font) - 1f);
+            score -= SCORE_SIZE * Math.abs(GdxFontMetrics.getScale(paramStyle, info.font) - 1f);
+
+            // Check outline
+            if (paramStyle.hasOutline() || infoStyle.hasOutline()) {
+                if (paramStyle.getOutlineColor() != infoStyle.getOutlineColor()) {
+                    score -= SCORE_OUTLINE;
+                } else {
+                    score -= SCORE_OUTLINE * getDecorationBadness(paramStyle.getOutlineSize(),
+                            infoStyle.getOutlineSize(), info.nativePixelSize);
+                }
+            }
+
+            // Check shadow
+            if (paramStyle.hasShadow() || infoStyle.hasShadow()) {
+                if (paramStyle.getShadowColor() != infoStyle.getShadowColor()) {
+                    score -= SCORE_SHADOW;
+                } else {
+                    float badnessX = getDecorationBadness(paramStyle.getShadowDx(), infoStyle.getShadowDx(),
+                            info.nativePixelSize);
+                    float badnessY = getDecorationBadness(paramStyle.getShadowDy(), infoStyle.getShadowDy(),
+                            info.nativePixelSize);
+                    score -= SCORE_SHADOW * (badnessX + badnessY) / 2f;
+                }
+            }
 
             if (score > bestScore) {
                 bestScore = score;
@@ -66,15 +101,23 @@ public class GdxFontStore implements IFontStore {
         return bestInfo;
     }
 
+    /**
+     * Calculates a mismatch fraction between two outline/shadow sizes
+     * @return The degree to which the two values mismatch (between 0.0 and 1.0).
+     */
+    private float getDecorationBadness(float a, float b, int nativePixelSize) {
+        float badness = Math.abs(a - b);
+        badness = .1f * badness / nativePixelSize;
+        return Math.max(0, Math.min(1, badness));
+    }
+
     private static class FontInfo {
 
-        public final String name;
-        public final EFontStyle style;
+        public final TextStyle style;
         public final BitmapFont font;
-        private final int nativePixelSize;
+        public final int nativePixelSize;
 
-        public FontInfo(String name, EFontStyle style, BitmapFont font, int nativePixelSize) {
-            this.name = name;
+        public FontInfo(TextStyle style, BitmapFont font, int nativePixelSize) {
             this.style = style;
             this.font = font;
             this.nativePixelSize = nativePixelSize;
