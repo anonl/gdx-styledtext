@@ -12,6 +12,8 @@ import nl.weeaboo.gdx.test.GdxIntegrationTestRunner;
 import nl.weeaboo.gdx.test.GdxRenderTest;
 import nl.weeaboo.styledtext.MutableStyledText;
 import nl.weeaboo.styledtext.MutableTextStyle;
+import nl.weeaboo.styledtext.StyleParseException;
+import nl.weeaboo.styledtext.StyledText;
 import nl.weeaboo.styledtext.TextStyle;
 
 @RunWith(GdxIntegrationTestRunner.class)
@@ -20,9 +22,10 @@ public class OutlineRenderTest extends GdxRenderTest {
     private TextStyle red;
     private TextStyle green;
     private TextStyle blue;
+    private TextStyle outlinePlusColor;
 
     @Before
-    public void before() throws IOException {
+    public void before() throws IOException, StyleParseException {
         // this.generate = true;
 
         red = createOutlineStyle(0xFFFF0000, 2f);
@@ -33,6 +36,9 @@ public class OutlineRenderTest extends GdxRenderTest {
 
         blue = createOutlineStyle(0xFF0000FF, 3f);
         fontStore.register(blue);
+
+        outlinePlusColor = red.extend(TextStyle.fromString("color=00FF00"));
+        fontStore.register(outlinePlusColor);
     }
 
     private TextStyle createOutlineStyle(int argb, float size) {
@@ -49,6 +55,13 @@ public class OutlineRenderTest extends GdxRenderTest {
         mst.setStyle(green, 1);
         mst.setStyle(blue, 2);
         checkRenderResult("basic-outline", renderText(mst.immutableCopy()));
+    }
+
+    /** Outline + text color */
+    @Test
+    public void outlinePlusColor() {
+        // Green text with a red outline
+        checkRenderResult("outline-plus-color", renderText(new StyledText("ABC", outlinePlusColor)));
     }
 
 }

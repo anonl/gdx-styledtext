@@ -43,7 +43,10 @@ final class GdxTextElement extends TextElement {
     }
 
     private void initGlyphLayout(CharSequence str, TextStyle style) {
-        Color color = GdxFontUtil.argb8888ToColor(style.getColor());
+        Color color = Color.WHITE;
+        if (GdxFontUtil.isColorizable(style)) {
+            color = GdxFontUtil.argb8888ToColor(style.getColor());
+        }
 
         applyScale();
         {

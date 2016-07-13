@@ -71,6 +71,10 @@ public final class GdxFontUtil {
                 FreeTypeFontParameter parameter = new FreeTypeFontParameter();
                 parameter.size = sizes[n];
 
+                if (!GdxFontUtil.isColorizable(style)) {
+                    parameter.color = GdxFontUtil.argb8888ToColor(style.getColor());
+                }
+
                 parameter.borderColor = argb8888ToColor(style.getOutlineColor());
                 parameter.borderWidth = style.getOutlineSize();
 
@@ -93,5 +97,13 @@ public final class GdxFontUtil {
         Color color = new Color();
         Color.argb8888ToColor(color, argb);
         return color;
+    }
+
+    /**
+     * @return {@code true} if the resulting glyphs can be color-tinted. Colored shadows or outlines result in
+     *         glyphs that can't be colorized.
+     */
+    static boolean isColorizable(TextStyle style) {
+        return !style.hasOutline() && !style.hasShadow();
     }
 }

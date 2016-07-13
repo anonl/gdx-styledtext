@@ -12,8 +12,9 @@ import nl.weeaboo.styledtext.layout.IFontStore;
 
 public class GdxFontStore implements IFontStore {
 
-    private static final int SCORE_NAME     = 1000000;
-    private static final int SCORE_STYLE    = 100000;
+    private static final int SCORE_NAME     = 10000000;
+    private static final int SCORE_STYLE    = 1000000;
+    private static final int SCORE_COLOR    = 100000;
     private static final int SCORE_SIZE     = 10000;
     private static final int SCORE_OUTLINE  = 100;
     private static final int SCORE_SHADOW   = 100;
@@ -68,6 +69,11 @@ public class GdxFontStore implements IFontStore {
 
             // Check size
             score -= SCORE_SIZE * Math.abs(GdxFontMetrics.getScale(paramStyle, info.font) - 1f);
+
+            // Check color (only if not colorizable)
+            if (!GdxFontUtil.isColorizable(infoStyle) && paramStyle.getColor() != infoStyle.getColor()) {
+                score -= SCORE_COLOR;
+            }
 
             // Check outline
             if (paramStyle.hasOutline() || infoStyle.hasOutline()) {
