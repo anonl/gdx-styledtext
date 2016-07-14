@@ -3,6 +3,8 @@ package nl.weeaboo.styledtext.gdx;
 import java.util.Arrays;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
@@ -16,11 +18,15 @@ import nl.weeaboo.styledtext.MirrorChars;
 import nl.weeaboo.styledtext.TextStyle;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
 import nl.weeaboo.styledtext.layout.TextElement;
+import nl.weeaboo.styledtext.layout.UnderlineMetrics;
 
 final class GdxTextElement extends TextElement {
 
+    private static Texture blankTexture;
+
     private final TextStyle style;
     private final BitmapFont font;
+    private final UnderlineMetrics underlineMetrics;
     private final float originalScaleX, originalScaleY;
     private final float scaleXY;
 
@@ -29,11 +35,14 @@ final class GdxTextElement extends TextElement {
     private int glyphCount;
     private boolean ydown;
 
-    public GdxTextElement(CharSequence str, TextStyle style, int bidiLevel, BitmapFont font, float scaleXY) {
+    public GdxTextElement(CharSequence str, TextStyle style, int bidiLevel, BitmapFont font, float scaleXY,
+            UnderlineMetrics underlineMetrics) {
+
         super(style.getAlign(), bidiLevel);
 
         this.style = style;
         this.font = font;
+        this.underlineMetrics = underlineMetrics;
 
         originalScaleX = font.getScaleX();
         originalScaleY = font.getScaleY();
@@ -88,13 +97,12 @@ final class GdxTextElement extends TextElement {
 
         applyScale();
         {
-            dy += (ydown ? font.getAscent() : -font.getAscent());
-
             if (visibleGlyphs < 0f || visibleGlyphs >= glyphCount) {
-                // Fully visible
-                font.draw(batch, glyphLayout, getX() + dx, getY() + dy);
+                // Text fully visible
+                drawUnderline(batch, glyphLayout, dx, dy);
+                drawLayout(batch, glyphLayout, dx, dy);
             } else {
-                // Partially visible
+                // Text partially visible
                 int visible = (int)visibleGlyphs;
 
                 GlyphRun run = glyphLayout.runs.first();
@@ -111,11 +119,12 @@ final class GdxTextElement extends TextElement {
                     }
 
                     setGlyphs(glyphs, Arrays.copyOfRange(oldGlyphs, invisible, oldSize));
-                    xAdvances.items = Arrays.copyOfRange(oldXAdvances, invisible, oldSize);
+                    xAdvances.items = Arrays.copyOfRange(oldXAdvances, invisible, xAdvances.size);
                 }
                 glyphs.size = visible;
 
-                font.draw(batch, glyphLayout, getX() + dx, getY() + dy);
+                drawUnderline(batch, glyphLayout, dx, dy);
+                drawLayout(batch, glyphLayout, dx, dy);
 
                 if (isRightToLeft()) {
                     setGlyphs(glyphs, oldGlyphs);
@@ -125,6 +134,48 @@ final class GdxTextElement extends TextElement {
             }
         }
         resetScale();
+    }
+
+    private void drawLayout(Batch batch, GlyphLayout glyphLayout, float dx, float dy) {
+        dy += (ydown ? font.getAscent() : -font.getAscent());
+        font.draw(batch, glyphLayout, getX() + dx, getY() + dy);
+    }
+
+    private void drawUnderline(Batch batch, GlyphLayout glyphLayout, float dx, float dy) {
+        if (!style.isUnderlined()) {
+            // Not underlined -> abort
+            return;
+        }
+
+        float thickness = underlineMetrics.getUnderlineThickness();
+        float underlineDy = ascent - underlineMetrics.getUnderlinePosition();
+        if (!ydown) {
+            underlineDy = -underlineDy;
+        }
+
+        float x = getX() + dx;
+        float y = getY() + dy + underlineDy - thickness / 2;
+
+        for (GlyphRun run : glyphLayout.runs) {
+            float runX = run.x + run.xAdvances.get(0);
+
+            float runWidth = 0f;
+            for (int n = 0; n < run.glyphs.size; n++) {
+                runWidth += run.xAdvances.get(1 + n); // Glyph offsets start at index 1
+            }
+
+            batch.draw(getBlankTexture(), x + runX, y + run.y, runWidth, thickness);
+        }
+    }
+
+    private static synchronized Texture getBlankTexture() {
+        if (blankTexture == null) {
+            Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
+            pixmap.setColor(Color.WHITE);
+            pixmap.fill();
+            blankTexture = new Texture(pixmap);
+        }
+        return blankTexture;
     }
 
     /** Ugly code needed because Array uses an unchecked cast from Object[] to T[] */

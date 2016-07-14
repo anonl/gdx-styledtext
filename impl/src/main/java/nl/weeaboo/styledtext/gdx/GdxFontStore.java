@@ -1,6 +1,7 @@
 package nl.weeaboo.styledtext.gdx;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,6 +10,7 @@ import nl.weeaboo.styledtext.EFontStyle;
 import nl.weeaboo.styledtext.TextStyle;
 import nl.weeaboo.styledtext.layout.IFontMetrics;
 import nl.weeaboo.styledtext.layout.IFontStore;
+import nl.weeaboo.styledtext.layout.UnderlineMetrics;
 
 public class GdxFontStore implements IFontStore {
 
@@ -19,36 +21,40 @@ public class GdxFontStore implements IFontStore {
     private static final int SCORE_OUTLINE  = 100;
     private static final int SCORE_SHADOW   = 100;
 
-    private final List<FontInfo> fonts = new ArrayList<FontInfo>();
+    private final List<GdxFontInfo> fonts = new ArrayList<GdxFontInfo>();
 
     /**
-     * @deprecated Use {@link #registerFont(TextStyle, BitmapFont, int)} instead.
+     * @deprecated Use {@link #registerFont(GdxFontInfo)} instead.
      */
     @Deprecated
     public void registerFont(String name, EFontStyle style, BitmapFont font, int pixelSize) {
         TextStyle ts = new TextStyle(name, style, pixelSize);
-        registerFont(ts, font, pixelSize);
+        registerFont(new GdxFontInfo(ts, font, pixelSize, UnderlineMetrics.NONE));
     }
-    public void registerFont(TextStyle style, BitmapFont font, int pixelSize) {
-        fonts.add(new FontInfo(style, font, pixelSize));
+    public void registerFont(GdxFontInfo fontInfo) {
+        fonts.add(fontInfo);
     }
 
     @Override
     public IFontMetrics getFontMetrics(TextStyle style) {
-        FontInfo bestMatch = findFont(style);
+        GdxFontInfo bestMatch = findFont(style);
         if (bestMatch == null) {
             return null;
         }
 
         BitmapFont font = bestMatch.font;
-        return new GdxFontMetrics(font, bestMatch.getScaleFor(style));
+        return new GdxFontMetrics(font, bestMatch.getScaleFor(style), bestMatch.underlineMetrics);
     }
 
-    private FontInfo findFont(TextStyle paramStyle) {
-        int bestScore = Integer.MIN_VALUE;
-        FontInfo bestInfo = null;
+    public List<GdxFontInfo> getFonts() {
+        return Collections.unmodifiableList(fonts);
+    }
 
-        for (FontInfo info : fonts) {
+    private GdxFontInfo findFont(TextStyle paramStyle) {
+        int bestScore = Integer.MIN_VALUE;
+        GdxFontInfo bestInfo = null;
+
+        for (GdxFontInfo info : fonts) {
             int score = 0;
 
             TextStyle infoStyle = info.style;
@@ -115,25 +121,6 @@ public class GdxFontStore implements IFontStore {
         float badness = Math.abs(a - b);
         badness = .1f * badness / nativePixelSize;
         return Math.max(0, Math.min(1, badness));
-    }
-
-    private static class FontInfo {
-
-        public final TextStyle style;
-        public final BitmapFont font;
-        public final int nativePixelSize;
-
-        public FontInfo(TextStyle style, BitmapFont font, int nativePixelSize) {
-            this.style = style;
-            this.font = font;
-            this.nativePixelSize = nativePixelSize;
-        }
-
-        /** @return The amount of additional scaling required to reach the desired size */
-        public float getScaleFor(TextStyle style) {
-            return style.getFontSize() / nativePixelSize;
-        }
-
     }
 
 }

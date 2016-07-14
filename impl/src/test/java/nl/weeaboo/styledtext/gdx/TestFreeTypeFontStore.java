@@ -17,8 +17,6 @@ public class TestFreeTypeFontStore extends GdxFontStore {
     public static final TextStyle SERIF_32 = textStyle("RobotoSlab", 32);
     public static final TextStyle SERIF_32_ITALIC = new TextStyle("RobotoSlab", EFontStyle.ITALIC, 32);
 
-    private final List<BitmapFont> bitmapFonts = new ArrayList<BitmapFont>();
-
     public TestFreeTypeFontStore() {
         try {
             register(SERIF_16);
@@ -38,16 +36,7 @@ public class TestFreeTypeFontStore extends GdxFontStore {
         Assert.assertNotNull(fontName);
 
         String filename = "font/" + fontName + ".ttf";
-        int pixelSize = Math.round(style.getFontSize());
-        BitmapFont bitmapFont = GdxFontUtil.load(filename, style, pixelSize);
-        registerFont(style, bitmapFont, pixelSize);
-    }
-
-    @Override
-    public void registerFont(TextStyle style, BitmapFont font, int pixelSize) {
-        bitmapFonts.add(font);
-
-        super.registerFont(style, font, pixelSize);
+        registerFont(GdxFontUtil.load(filename, style));
     }
 
     @Override
@@ -56,7 +45,11 @@ public class TestFreeTypeFontStore extends GdxFontStore {
     }
 
     public List<BitmapFont> getBitmapFonts() {
-        return bitmapFonts;
+        List<BitmapFont> result = new ArrayList<BitmapFont>();
+        for (GdxFontInfo fontInfo : getFonts()) {
+            result.add(fontInfo.font);
+        }
+        return result;
     }
 
 }

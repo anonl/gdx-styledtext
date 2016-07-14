@@ -6,14 +6,16 @@ import nl.weeaboo.styledtext.TextStyle;
 import nl.weeaboo.styledtext.layout.AbstractFontMetrics;
 import nl.weeaboo.styledtext.layout.ILayoutElement;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
+import nl.weeaboo.styledtext.layout.UnderlineMetrics;
 
 final class GdxFontMetrics extends AbstractFontMetrics {
 
     private final BitmapFont font;
     private final float scaleXY;
 
-    public GdxFontMetrics(BitmapFont font, float scaleXY) {
-        super(font.getSpaceWidth() * scaleXY, font.getLineHeight() * scaleXY);
+    public GdxFontMetrics(BitmapFont font, float scaleXY, UnderlineMetrics underlineMetrics) {
+        super(font.getSpaceWidth() * scaleXY, font.getLineHeight() * scaleXY,
+                underlineMetrics.scaledCopy(scaleXY));
 
         this.font = font;
         this.scaleXY = scaleXY;
@@ -27,7 +29,7 @@ final class GdxFontMetrics extends AbstractFontMetrics {
     public ILayoutElement layoutText(CharSequence str, TextStyle style, int bidiLevel,
             LayoutParameters params) {
 
-        return new GdxTextElement(str, style, bidiLevel, font, scaleXY);
+        return new GdxTextElement(str, style, bidiLevel, font, scaleXY, getUnderlineMetrics());
     }
 
     public static float getScale(TextStyle style, BitmapFont font) {

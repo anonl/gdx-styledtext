@@ -2,20 +2,28 @@ package nl.weeaboo.styledtext.gdx;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Face;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.utils.Logger;
 
 import nl.weeaboo.styledtext.TextStyle;
 import nl.weeaboo.styledtext.layout.ILayoutElement;
 import nl.weeaboo.styledtext.layout.ITextLayout;
+import nl.weeaboo.styledtext.layout.UnderlineMetrics;
 
 public final class GdxFontUtil {
+
+    private static final Logger LOG = new Logger(GdxFontUtil.class.getName());
 
     private GdxFontUtil() {
     }
@@ -42,28 +50,17 @@ public final class GdxFontUtil {
         }
     }
 
-    /** @deprecated Use */
-    @Deprecated
-    public static BitmapFont load(String fontPath, int size) throws IOException {
+    public static GdxFontInfo load(String fontPath, TextStyle style) throws IOException {
         FileHandle fontFile = Gdx.files.internal(fontPath);
-        return load(fontFile, new int[] { size })[0];
+        int pixelSize = Math.round(style.getFontSize());
+        return load(fontFile, style, new int[] { pixelSize })[0];
     }
-    /** @deprecated Use */
-    @Deprecated
-    public static BitmapFont[] load(FileHandle fontFile, int[] sizes) throws IOException {
-        return load(fontFile, TextStyle.defaultInstance(), sizes);
-    }
-
-    public static BitmapFont load(String fontPath, TextStyle style, int size) throws IOException {
-        FileHandle fontFile = Gdx.files.internal(fontPath);
-        return load(fontFile, style, new int[] { size })[0];
-    }
-    public static BitmapFont[] load(FileHandle fontFile, TextStyle style, int[] sizes) throws IOException {
+    public static GdxFontInfo[] load(FileHandle fontFile, TextStyle style, int[] sizes) throws IOException {
         if (!fontFile.exists()) {
             throw new FileNotFoundException(fontFile.toString());
         }
 
-        BitmapFont[] result = new BitmapFont[sizes.length];
+        GdxFontInfo[] result = new GdxFontInfo[sizes.length];
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
         try {
@@ -84,13 +81,37 @@ public final class GdxFontUtil {
 
                 BitmapFont bmFont = generator.generateFont(parameter);
                 bmFont.setUseIntegerPositions(true);
-                result[n] = bmFont;
+
+                UnderlineMetrics underlineMetrics = deriveUnderlineMetrics(generator, sizes[n]);
+
+                result[n] = new GdxFontInfo(style, bmFont, sizes[n], underlineMetrics);
             }
         } finally {
             generator.dispose();
         }
 
         return result;
+    }
+
+    private static UnderlineMetrics deriveUnderlineMetrics(FreeTypeFontGenerator generator, int size) {
+        try {
+            Field faceField = FreeTypeFontGenerator.class.getDeclaredField("face");
+            faceField.setAccessible(true);
+            Face face = (Face)faceField.get(generator);
+
+            SizeMetrics sizeMetrics = face.getSize().getMetrics();
+
+            int yScale = sizeMetrics.getYscale(); // 16.16 fixed point
+            float position = FreeType.toInt(face.getUnderlinePosition() * yScale >> 16);
+            float thickness = FreeType.toInt(face.getUnderlineThickness() * yScale >> 16);
+            return new UnderlineMetrics(position, thickness);
+        } catch (Exception e) {
+            LOG.error("Error fetching FreeType underline metrics", e);
+        }
+
+        // Return a reasonable default
+        float scale = size / 16f;
+        return new UnderlineMetrics(-2f * scale, scale);
     }
 
     static Color argb8888ToColor(int argb) {

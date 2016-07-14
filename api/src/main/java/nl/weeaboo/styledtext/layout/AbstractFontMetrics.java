@@ -6,10 +6,15 @@ public abstract class AbstractFontMetrics implements IFontMetrics {
 
     private final float spaceWidth;
     private final float lineHeight;
+    private final UnderlineMetrics underlineMetrics;
 
     public AbstractFontMetrics(float spaceWidth, float lineHeight) {
+        this(spaceWidth, lineHeight, UnderlineMetrics.NONE);
+    }
+    public AbstractFontMetrics(float spaceWidth, float lineHeight, UnderlineMetrics underlineMetrics) {
         this.spaceWidth = spaceWidth;
         this.lineHeight = lineHeight;
+        this.underlineMetrics = underlineMetrics;
     }
 
     @Override
@@ -20,6 +25,11 @@ public abstract class AbstractFontMetrics implements IFontMetrics {
     @Override
     public final float getLineHeight() {
         return lineHeight;
+    }
+
+    @Override
+    public final UnderlineMetrics getUnderlineMetrics() {
+        return underlineMetrics;
     }
 
     @Override
