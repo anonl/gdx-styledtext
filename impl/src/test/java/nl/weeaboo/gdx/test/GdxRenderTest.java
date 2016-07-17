@@ -29,9 +29,9 @@ import nl.weeaboo.styledtext.layout.LayoutUtil;
 public class GdxRenderTest {
 
     // Allow a small difference in color to account for rounding errors
-    private static final int MAX_COLOR_DIFF = 1;
+    private static final int MAX_COLOR_DIFF = 2;
 
-    protected boolean generate;
+    protected boolean generate = false;
     protected SpriteBatch batch;
     protected TestFreeTypeFontStore fontStore;
 
@@ -71,8 +71,7 @@ public class GdxRenderTest {
         float th = layout.getTextHeight();
         float tw = layout.getTextWidth();
 
-        Rectangle bounds = new Rectangle2D.Float(0, 0, tw, th).getBounds();
-        bounds.grow(pad * 2, pad * 2);
+        Rectangle bounds = new Rectangle2D.Float(0, 0, tw + pad * 2, th + pad * 2).getBounds();
 
         clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
