@@ -9,3 +9,6 @@ addons:
     packages:
       - xorg-dev
       - libgtk-3-dev
+
+script:
+  ./gradlew check --info
