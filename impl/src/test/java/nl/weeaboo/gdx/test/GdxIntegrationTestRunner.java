@@ -10,12 +10,14 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWErrorCallback;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3NativesLoader;
 import com.badlogic.gdx.graphics.GL20;
 
 public class GdxIntegrationTestRunner extends BlockJUnit4ClassRunner {
@@ -37,12 +39,6 @@ public class GdxIntegrationTestRunner extends BlockJUnit4ClassRunner {
             // Integration tests require a GL context, so they don't work in a headless env
             testNotifier.fireTestIgnored();
         } else {
-            /*
-             * Workaround for libGDX issue; GLFW context is terminated upon shutdown, but not reinitialized when
-             * creating a new application
-             */
-            GLFW.glfwInit();
-
             try {
                 runInRenderThread(new Runnable() {
                     @Override
@@ -59,6 +55,15 @@ public class GdxIntegrationTestRunner extends BlockJUnit4ClassRunner {
     private void runInRenderThread(final Runnable runner) throws InterruptedException {
         final Semaphore initLock = new Semaphore(0);
         final Semaphore runLock = new Semaphore(0);
+
+        /*
+         * Workaround for libGDX issue; GLFW context is terminated upon shutdown, but not reinitialized when
+         * creating a new application
+         */
+        Lwjgl3NativesLoader.load();
+        GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint(System.err);
+        GLFW.glfwSetErrorCallback(errorCallback);
+        GLFW.glfwInit();
 
         /*
          * Workaround for libGDX issue; Lwjgl3Application constructor contains an infinite loop (lolwut), so
