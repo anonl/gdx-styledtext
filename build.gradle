@@ -36,7 +36,7 @@ subprojects {
     
     test {
         jvmArgs '-Xcheck:jni'
-        jvmArgs '-XX:OnError=\"cat hs_err_pid%p.log\"'
+        jvmArgs '-XX:OnError=cat hs_err_pid%p.log'
     }
     
     task sourceJar(type: Jar) {
