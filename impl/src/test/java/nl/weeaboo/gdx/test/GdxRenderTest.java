@@ -120,7 +120,7 @@ public class GdxRenderTest {
                     int ab = (actualPixel>> 8) & 0xFF;
                     int aa = (actualPixel    ) & 0xFF;
 
-                    if (unequal(ea, aa) || unequal(er, ar) || unequal(eg, ag) || unequal(eb, ab)) {
+                    if (!cequal(ea, aa) || !cequal(er, ar) || !cequal(eg, ag) || !cequal(eb, ab)) {
                         Assert.fail(String.format(Locale.ROOT,
                             "Pixels at (%d,%d) not equal (maxDiff=%d): expected=%08x, actual=%08x",
                             x, y, MAX_COLOR_DIFF, expectedPixel, actualPixel));
@@ -130,7 +130,7 @@ public class GdxRenderTest {
         }
     }
 
-    private static boolean unequal(int expectedChannelVal, int actualChannelVal) {
+    private static boolean cequal(int expectedChannelVal, int actualChannelVal) {
         return Math.abs(expectedChannelVal - actualChannelVal) <= MAX_COLOR_DIFF;
     }
 
