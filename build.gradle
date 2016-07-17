@@ -34,10 +34,14 @@ subprojects {
     	testCompile "junit:junit:$junitVersion"
     }
     
+    test {
+        jvmArgs '-Xcheck:jni'
+    }
+    
     task sourceJar(type: Jar) {
         from sourceSets.main.allJava
         classifier "sources"
-    }    
+    }
 }
 
 project(":styledtext-api") {    

@@ -4,12 +4,6 @@ language: java
 jdk:
   - openjdk6
 
-addons:
-  apt:
-    packages:
-      - libgl1-mesa-swx11-dev
-      - libgl1-mesa-swx11
-
 before_script:
   # Start virtual frame buffer, see: https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-GUI-(e.g.-a-Web-browser)
   - "export DISPLAY=:99.0"
@@ -17,4 +11,4 @@ before_script:
   - sleep 3 # give xvfb some time to start
 
 script:
-  ./gradlew check --debug
+  ./gradlew check --info
