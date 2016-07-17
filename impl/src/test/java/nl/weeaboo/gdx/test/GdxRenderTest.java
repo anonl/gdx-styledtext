@@ -28,6 +28,9 @@ import nl.weeaboo.styledtext.layout.LayoutUtil;
 
 public class GdxRenderTest {
 
+    // Allow a small difference in color to account for rounding errors
+    private static final int MAX_COLOR_DIFF = 1;
+
     protected boolean generate;
     protected SpriteBatch batch;
     protected TestFreeTypeFontStore fontStore;
@@ -104,14 +107,31 @@ public class GdxRenderTest {
         for (int y = 0; y < expected.getHeight(); y++) {
             for (int x = 0; x < expected.getWidth(); x++) {
                 int expectedPixel = expected.getPixel(x, y);
+
                 int actualPixel = actual.getPixel(x, y);
                 if (expectedPixel != actualPixel) {
-                    Assert.fail(String.format(Locale.ROOT,
-                        "Pixels at (%d,%d) not equal: expected=%08x, actual=%08x",
-                        x, y, expectedPixel, actualPixel));
+                    int er = (expectedPixel>>24) & 0xFF;
+                    int eg = (expectedPixel>>16) & 0xFF;
+                    int eb = (expectedPixel>> 8) & 0xFF;
+                    int ea = (expectedPixel    ) & 0xFF;
+
+                    int ar = (actualPixel>>24) & 0xFF;
+                    int ag = (actualPixel>>16) & 0xFF;
+                    int ab = (actualPixel>> 8) & 0xFF;
+                    int aa = (actualPixel    ) & 0xFF;
+
+                    if (unequal(ea, aa) || unequal(er, ar) || unequal(eg, ag) || unequal(eb, ab)) {
+                        Assert.fail(String.format(Locale.ROOT,
+                            "Pixels at (%d,%d) not equal (maxDiff=%d): expected=%08x, actual=%08x",
+                            x, y, MAX_COLOR_DIFF, expectedPixel, actualPixel));
+                    }
                 }
             }
         }
+    }
+
+    private static boolean unequal(int expectedChannelVal, int actualChannelVal) {
+        return Math.abs(expectedChannelVal - actualChannelVal) <= MAX_COLOR_DIFF;
     }
 
     private static Pixmap screenshot(int x, int y, int w, int h) {

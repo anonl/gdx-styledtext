@@ -35,8 +35,15 @@ subprojects {
     }
     
     test {
-        jvmArgs '-Xcheck:jni'
-        jvmArgs '-XX:OnError=cat hs_err_pid%p.log'
+        // jvmArgs '-Xcheck:jni'
+        // jvmArgs '-XX:OnError=cat hs_err_pid%p.log'
+        
+        testLogging {
+            info {
+                events 'skipped', 'passed', 'failed'
+                showStandardStreams true
+            }
+        }
     }
     
     task sourceJar(type: Jar) {
