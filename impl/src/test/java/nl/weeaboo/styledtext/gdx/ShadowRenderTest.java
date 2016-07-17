@@ -26,7 +26,7 @@ public class ShadowRenderTest extends GdxRenderTest {
 
     @Before
     public void before() throws IOException, StyleParseException {
-        this.generate = true;
+        // this.generate = true;
 
         red = createShadowStyle(0xFFFF0000, -2f, -0f);
         fontStore.register(red);
