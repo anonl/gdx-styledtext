@@ -23,6 +23,9 @@ public class GdxIntegrationTestRunner extends BlockJUnit4ClassRunner {
     private static final int MAX_STARTUP_TIME_SEC = 30;
     private static final int MAX_RUN_TIME_SEC = 900; // 15 minutes
 
+    // Audio is unnecessary and may crash when on a build server
+    private static final boolean DISABLE_AUDIO = true;
+
     public GdxIntegrationTestRunner(Class<?> klass) throws InitializationError {
         super(klass);
     }
@@ -65,6 +68,7 @@ public class GdxIntegrationTestRunner extends BlockJUnit4ClassRunner {
             @Override
             public void run() {
                 Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+                config.disableAudio(DISABLE_AUDIO);
 
                 @SuppressWarnings("unused")
                 Lwjgl3Application app = new Lwjgl3Application(new ApplicationAdapter() {
