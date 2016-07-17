@@ -52,6 +52,9 @@ public final class GdxFontUtil {
 
     public static GdxFontInfo load(String fontPath, TextStyle style) throws IOException {
         FileHandle fontFile = Gdx.files.internal(fontPath);
+        return load(fontFile, style);
+    }
+    public static GdxFontInfo load(FileHandle fontFile, TextStyle style) throws IOException {
         int pixelSize = Math.round(style.getFontSize());
         return load(fontFile, style, new int[] { pixelSize })[0];
     }
@@ -95,6 +98,7 @@ public final class GdxFontUtil {
 
     private static UnderlineMetrics deriveUnderlineMetrics(FreeTypeFontGenerator generator, int size) {
         try {
+            // Size metrics aren't publicly accessible (as of 1.9.3). (Ab)use reflection to gain access.
             Field faceField = FreeTypeFontGenerator.class.getDeclaredField("face");
             faceField.setAccessible(true);
             Face face = (Face)faceField.get(generator);
@@ -110,8 +114,7 @@ public final class GdxFontUtil {
         }
 
         // Return a reasonable default
-        float scale = size / 16f;
-        return new UnderlineMetrics(-2f * scale, scale);
+        return UnderlineMetrics.defaultInstance(size);
     }
 
     static Color argb8888ToColor(int argb) {

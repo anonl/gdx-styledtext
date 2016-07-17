@@ -35,6 +35,15 @@ public class MutableStyledText extends AbstractStyledText<MutableStyledText> {
         return new StyledText(len, getChars(), 0, getStyles(), 0);
     }
 
+    public void append(CharSequence append) {
+        if (append instanceof AbstractStyledText<?>) {
+            // This CharSequence is styled, so we can pass it along as-is
+            append((AbstractStyledText<?>)append);
+        } else {
+            // Wrap non-styled CharSequence in empty styling
+            append(new StyledText(append.toString()));
+        }
+    }
     public void append(AbstractStyledText<?> append) {
         int newLen = length() + append.length();
         ensureCapacity(newLen);
@@ -44,6 +53,9 @@ public class MutableStyledText extends AbstractStyledText<MutableStyledText> {
         len = newLen;
     }
 
+    public void append(char c) {
+        append(c, null);
+    }
     public void append(char c, TextStyle style) {
         checkNotNull(style);
 

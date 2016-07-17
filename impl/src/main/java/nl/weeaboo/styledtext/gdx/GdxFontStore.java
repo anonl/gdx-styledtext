@@ -1,10 +1,11 @@
 package nl.weeaboo.styledtext.gdx;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.utils.Disposable;
 
 import nl.weeaboo.styledtext.EFontStyle;
 import nl.weeaboo.styledtext.TextStyle;
@@ -12,7 +13,7 @@ import nl.weeaboo.styledtext.layout.IFontMetrics;
 import nl.weeaboo.styledtext.layout.IFontStore;
 import nl.weeaboo.styledtext.layout.UnderlineMetrics;
 
-public class GdxFontStore implements IFontStore {
+public class GdxFontStore implements IFontStore, Disposable {
 
     private static final int SCORE_NAME     = 10000000;
     private static final int SCORE_STYLE    = 1000000;
@@ -21,7 +22,15 @@ public class GdxFontStore implements IFontStore {
     private static final int SCORE_OUTLINE  = 100;
     private static final int SCORE_SHADOW   = 100;
 
-    private final List<GdxFontInfo> fonts = new ArrayList<GdxFontInfo>();
+    private final CopyOnWriteArrayList<GdxFontInfo> fonts = new CopyOnWriteArrayList<GdxFontInfo>();
+
+    @Override
+    public void dispose() {
+        for (GdxFontInfo font : fonts) {
+            font.dispose();
+        }
+        fonts.clear();
+    }
 
     /**
      * @deprecated Use {@link #registerFont(GdxFontInfo)} instead.
@@ -33,6 +42,11 @@ public class GdxFontStore implements IFontStore {
     }
     public void registerFont(GdxFontInfo fontInfo) {
         fonts.add(fontInfo);
+    }
+
+    public void disposeFont(GdxFontInfo fontInfo) {
+        fonts.remove(fontInfo);
+        fontInfo.dispose();
     }
 
     @Override

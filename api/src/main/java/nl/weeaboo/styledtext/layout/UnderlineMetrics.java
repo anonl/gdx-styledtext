@@ -13,6 +13,15 @@ public final class UnderlineMetrics {
         this.thickness = thickness;
     }
 
+    /**
+     * @return A reasonable {@link UnderlineMetrics} instance for the given font size. This can be used to
+     *         generate underline metrics for font types that don't contain any underline metrics.
+     */
+    public static UnderlineMetrics defaultInstance(float fontSize) {
+        float scale = fontSize / 16f;
+        return new UnderlineMetrics(-2f * scale, scale);
+    }
+
     public UnderlineMetrics scaledCopy(float scale) {
         return new UnderlineMetrics(position * scale, thickness * scale);
     }
