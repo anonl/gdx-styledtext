@@ -37,6 +37,12 @@ public class GdxIntegrationTestRunner extends BlockJUnit4ClassRunner {
             // Integration tests require a GL context, so they don't work in a headless env
             testNotifier.fireTestIgnored();
         } else {
+            /*
+             * Workaround for libGDX issue; GLFW context is terminated upon shutdown, but not reinitialized when
+             * creating a new application
+             */
+            GLFW.glfwInit();
+
             try {
                 runInRenderThread(new Runnable() {
                     @Override
@@ -53,12 +59,6 @@ public class GdxIntegrationTestRunner extends BlockJUnit4ClassRunner {
     private void runInRenderThread(final Runnable runner) throws InterruptedException {
         final Semaphore initLock = new Semaphore(0);
         final Semaphore runLock = new Semaphore(0);
-
-        /*
-         * Workaround for libGDX issue; GLFW context is terminated upon shutdown, but not reinitialized when
-         * creating a new application
-         */
-        GLFW.glfwInit();
 
         /*
          * Workaround for libGDX issue; Lwjgl3Application constructor contains an infinite loop (lolwut), so
