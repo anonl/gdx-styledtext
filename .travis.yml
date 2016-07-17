@@ -4,8 +4,8 @@ language: java
 jdk:
   - openjdk6
 
-before_script:
-  # Start virtual frame buffer, see: https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-GUI-(e.g.-a-Web-browser)
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
+addons:
+  apt:
+    packages:
+      - xorg-dev
+      - libgtk-3-dev
