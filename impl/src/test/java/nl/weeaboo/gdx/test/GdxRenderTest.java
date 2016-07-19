@@ -2,23 +2,20 @@ package nl.weeaboo.gdx.test;
 
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-import java.nio.ByteBuffer;
-import java.util.Locale;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.utils.ScreenUtils;
 
+import nl.weeaboo.gdx.test.pixmap.PixmapEquality;
+import nl.weeaboo.gdx.test.pixmap.ScreenshotHelper;
 import nl.weeaboo.styledtext.StyledText;
 import nl.weeaboo.styledtext.gdx.GdxFontUtil;
 import nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore;
@@ -38,12 +35,16 @@ public class GdxRenderTest {
     private final int pad = 4;
 
     private ShapeRenderer shapeRenderer;
+    private PixmapEquality pixmapEquals;
 
     @Before
     public final void beforeRenderTest() {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         fontStore = new TestFreeTypeFontStore();
+
+        pixmapEquals = new PixmapEquality();
+        pixmapEquals.setMaxColorDiff(MAX_COLOR_DIFF);
     }
 
     @After
@@ -90,7 +91,7 @@ public class GdxRenderTest {
     }
 
     public void checkRenderResult(String testName, int x, int y, int w, int h) {
-        Pixmap actual = screenshot(x, y, w, h);
+        Pixmap actual = ScreenshotHelper.screenshot(x, y, w, h);
 
         String outputPath = "src/test/resources/render/" + testName + ".png";
         FileHandle fileHandle = Gdx.files.local(outputPath);
@@ -98,49 +99,8 @@ public class GdxRenderTest {
             PixmapIO.writePNG(fileHandle, actual);
         } else {
             Pixmap expected = new Pixmap(fileHandle);
-            assertPixmapEquals(expected, actual);
+            pixmapEquals.assertEquals(expected, actual);
         }
-    }
-
-    private static void assertPixmapEquals(Pixmap expected, Pixmap actual) {
-        for (int y = 0; y < expected.getHeight(); y++) {
-            for (int x = 0; x < expected.getWidth(); x++) {
-                int expectedPixel = expected.getPixel(x, y);
-
-                int actualPixel = actual.getPixel(x, y);
-                if (expectedPixel != actualPixel) {
-                    int er = (expectedPixel>>24) & 0xFF;
-                    int eg = (expectedPixel>>16) & 0xFF;
-                    int eb = (expectedPixel>> 8) & 0xFF;
-                    int ea = (expectedPixel    ) & 0xFF;
-
-                    int ar = (actualPixel>>24) & 0xFF;
-                    int ag = (actualPixel>>16) & 0xFF;
-                    int ab = (actualPixel>> 8) & 0xFF;
-                    int aa = (actualPixel    ) & 0xFF;
-
-                    if (!cequal(ea, aa) || !cequal(er, ar) || !cequal(eg, ag) || !cequal(eb, ab)) {
-                        Assert.fail(String.format(Locale.ROOT,
-                            "Pixels at (%d,%d) not equal (maxDiff=%d): expected=%08x, actual=%08x",
-                            x, y, MAX_COLOR_DIFF, expectedPixel, actualPixel));
-                    }
-                }
-            }
-        }
-    }
-
-    private static boolean cequal(int expectedChannelVal, int actualChannelVal) {
-        return Math.abs(expectedChannelVal - actualChannelVal) <= MAX_COLOR_DIFF;
-    }
-
-    private static Pixmap screenshot(int x, int y, int w, int h) {
-        byte[] pixelData = ScreenUtils.getFrameBufferPixels(x, y, w, h, true);
-
-        Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
-        ByteBuffer buf = pixmap.getPixels();
-        buf.put(pixelData);
-        buf.rewind();
-        return pixmap;
     }
 
 }

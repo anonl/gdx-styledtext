@@ -7,13 +7,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import nl.weeaboo.gdx.test.GdxIntegrationTestRunner;
 import nl.weeaboo.gdx.test.GdxRenderTest;
+import nl.weeaboo.gdx.test.junit.GdxLwjgl3TestRunner;
 import nl.weeaboo.styledtext.MutableStyledText;
 import nl.weeaboo.styledtext.StyledText;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
 
-@RunWith(GdxIntegrationTestRunner.class)
+@RunWith(GdxLwjgl3TestRunner.class)
 public class TextRenderTest extends GdxRenderTest {
 
     @Before

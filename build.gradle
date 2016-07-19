@@ -10,8 +10,8 @@ allprojects {
     
     repositories {
         mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://dl.bintray.com/anonl/gdx/" }
     }    
 }
 
@@ -23,6 +23,7 @@ subprojects {
     ext {
         gdxVersion = '1.9.3'
         junitVersion = '4.12'
+        gdxTestVersion = '1.0.0'
     }
     
     sourceCompatibility = 1.6
@@ -61,6 +62,7 @@ project(":styledtext-impl") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"        
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"        
 
+        testCompile "nl.weeaboo.gdx-test:gdx-test-core:$gdxTestVersion"
         testCompile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 		testRuntime "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         testRuntime "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"

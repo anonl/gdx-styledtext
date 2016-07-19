@@ -8,15 +8,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import nl.weeaboo.gdx.test.GdxIntegrationTestRunner;
 import nl.weeaboo.gdx.test.GdxRenderTest;
+import nl.weeaboo.gdx.test.junit.GdxLwjgl3TestRunner;
 import nl.weeaboo.styledtext.MutableStyledText;
 import nl.weeaboo.styledtext.MutableTextStyle;
 import nl.weeaboo.styledtext.StyleParseException;
 import nl.weeaboo.styledtext.StyledText;
 import nl.weeaboo.styledtext.TextStyle;
 
-@RunWith(GdxIntegrationTestRunner.class)
+@RunWith(GdxLwjgl3TestRunner.class)
 public class OutlineRenderTest extends GdxRenderTest {
 
     private TextStyle red;

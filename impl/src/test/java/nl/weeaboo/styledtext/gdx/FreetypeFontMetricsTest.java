@@ -10,9 +10,9 @@ import org.junit.runner.RunWith;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
-import nl.weeaboo.gdx.test.GdxIntegrationTestRunner;
+import nl.weeaboo.gdx.test.junit.GdxLwjgl3TestRunner;
 
-@RunWith(GdxIntegrationTestRunner.class)
+@RunWith(GdxLwjgl3TestRunner.class)
 public class FreetypeFontMetricsTest {
 
     private static final float SIZE_EPSILON = .01f;

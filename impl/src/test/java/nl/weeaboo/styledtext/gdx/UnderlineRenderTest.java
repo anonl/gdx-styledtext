@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import nl.weeaboo.gdx.test.GdxIntegrationTestRunner;
 import nl.weeaboo.gdx.test.GdxRenderTest;
+import nl.weeaboo.gdx.test.junit.GdxLwjgl3TestRunner;
 import nl.weeaboo.styledtext.MutableStyledText;
 import nl.weeaboo.styledtext.MutableTextStyle;
 import nl.weeaboo.styledtext.StyledText;
@@ -18,7 +18,7 @@ import nl.weeaboo.styledtext.TextStyle;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
 import nl.weeaboo.styledtext.layout.UnderlineMetrics;
 
-@RunWith(GdxIntegrationTestRunner.class)
+@RunWith(GdxLwjgl3TestRunner.class)
 public class UnderlineRenderTest extends GdxRenderTest {
 
     private static final float EPSILON = 0.001f;
