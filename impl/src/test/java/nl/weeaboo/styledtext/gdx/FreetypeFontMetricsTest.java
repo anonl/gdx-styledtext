@@ -6,12 +6,15 @@ import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import nl.weeaboo.gdx.test.junit.GdxLwjgl3TestRunner;
+import nl.weeaboo.gdx.test.junit.GdxUiTest;
 
+@Category(GdxUiTest.class)
 @RunWith(GdxLwjgl3TestRunner.class)
 public class FreetypeFontMetricsTest {
 

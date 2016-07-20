@@ -23,7 +23,7 @@ subprojects {
     ext {
         gdxVersion = '1.9.3'
         junitVersion = '4.12'
-        gdxTestVersion = '1.0.0'
+        gdxTestVersion = '1.0.1'
     }
     
     sourceCompatibility = 1.6
@@ -33,6 +33,7 @@ subprojects {
     
 	dependencies {
     	testCompile "junit:junit:$junitVersion"
+        testCompile "nl.weeaboo.gdx-test:gdx-test-core:$gdxTestVersion"
     }
     
     test {
@@ -45,6 +46,13 @@ subprojects {
                 showStandardStreams true
             }
         }
+        
+        useJUnit {
+            if (!project.hasProperty('uiTest')) {            
+                // Exclude UI tests by default
+                excludeCategories 'nl.weeaboo.gdx.test.junit.GdxUiTest'
+            }
+        }        
     }
     
     task sourceJar(type: Jar) {
@@ -62,7 +70,6 @@ project(":styledtext-impl") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"        
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"        
 
-        testCompile "nl.weeaboo.gdx-test:gdx-test-core:$gdxTestVersion"
         testCompile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 		testRuntime "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         testRuntime "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"

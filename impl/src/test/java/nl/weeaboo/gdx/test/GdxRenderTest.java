@@ -5,6 +5,7 @@ import java.awt.geom.Rectangle2D;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.experimental.categories.Category;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
+import nl.weeaboo.gdx.test.junit.GdxUiTest;
 import nl.weeaboo.gdx.test.pixmap.PixmapEquality;
 import nl.weeaboo.gdx.test.pixmap.ScreenshotHelper;
 import nl.weeaboo.styledtext.StyledText;
@@ -23,6 +25,7 @@ import nl.weeaboo.styledtext.layout.ITextLayout;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
 import nl.weeaboo.styledtext.layout.LayoutUtil;
 
+@Category(GdxUiTest.class)
 public class GdxRenderTest {
 
     // Allow a small difference in color to account for rounding errors
