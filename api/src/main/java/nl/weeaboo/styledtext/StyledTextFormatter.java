@@ -23,7 +23,7 @@ final class StyledTextFormatter {
         }
     }
 
-    public StyledText format() {
+    public StyledText format() throws IllegalArgumentException {
         MutableStyledText result = new MutableStyledText();
         while (hasNext()) {
             char c = next();
@@ -33,10 +33,15 @@ final class StyledTextFormatter {
                 result.append(c, curStyle());
             } else if (c == '{' && hasNext() && formatString.charAt(pos + 1) == '}') {
                 next();
-                result.append(toStyledText(args[argPos++]));
+                result.append(toStyledText(nextArg()));
             } else {
                 result.append(c, curStyle());
             }
+        }
+
+        if (argPos != args.length) {
+            throw new IllegalArgumentException("Too many parameters given for format string: \""
+                    + formatString + "\", expected " + argPos + ", got " + args.length);
         }
         return result.immutableCopy();
     }
@@ -62,6 +67,14 @@ final class StyledTextFormatter {
             return styledFormatString.getStyle(pos);
         }
         return TextStyle.defaultInstance();
+    }
+
+    private Object nextArg() {
+        if (argPos >= args.length) {
+            throw new IllegalArgumentException("Not enough parameters given for format string: \""
+                    + formatString + "\" (got " + args.length + ")");
+        }
+        return args[argPos++];
     }
 
 }

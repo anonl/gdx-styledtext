@@ -34,8 +34,10 @@ public final class StyledText extends AbstractStyledText<StyledText> {
      * of formatting used by SLF4J.
      *
      * @param formatString A string or {@link AbstractStyledText}.
-     * @param args Zero or more arguments to splice into the format string. Arguments are converted to
-     *             styled text representations.
+     * @param args Zero or more arguments to splice into the format string. Arguments are converted to styled
+     *        text representations.
+     *
+     * @throws IllegalArgumentException If the given format parameters don't match the format string.
      */
     public static StyledText format(CharSequence formatString, Object... args) {
         StyledTextFormatter formatter = new StyledTextFormatter(formatString, args);

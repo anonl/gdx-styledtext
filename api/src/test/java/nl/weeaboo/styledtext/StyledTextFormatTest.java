@@ -29,10 +29,10 @@ public class StyledTextFormatTest {
         assertFormat("{", "{");
         assertFormat("}", "}");
         assertFormat("{ }", "{ }"); // Space in the middle -> ignore
-        assertFormat("{0}", "{0}", "A");
-        assertFormat("{1}", "{1}", "A");
-        assertFormat("{}", "\\{}", "A");
-        assertFormat("{}", "{\\}", "A");
+        assertFormat("{0}", "{0}");
+        assertFormat("{1}", "{1}");
+        assertFormat("{}", "\\{}");
+        assertFormat("{}", "{\\}");
         assertFormat("{A}", "{{}}", "A");
         assertFormat("\\", "\\"); // Unterminated escape sequence
     }
@@ -63,19 +63,24 @@ public class StyledTextFormatTest {
         assertFormat(expected.immutableCopy(), format.immutableCopy(), bold("A"));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void tooManyArgs() {
-
+        assertFormat("", "{}{}", "A", "B", "C");
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void tooFewArgs() {
-
+        assertFormat("", "{}");
     }
 
     @Test
     public void nullArgs() {
+        assertFormat("xnully", "x{}y", new Object[] { null });
+    }
 
+    @Test
+    public void nonStringArgs() {
+        assertFormat("123x8.5", "{}x{}", 123, 8.5);
     }
 
     private static StyledText bold(String text) {
