@@ -54,7 +54,7 @@ public class MutableStyledText extends AbstractStyledText<MutableStyledText> {
     }
 
     public void append(char c) {
-        append(c, null);
+        append(c, TextStyle.defaultInstance());
     }
     public void append(char c, TextStyle style) {
         checkNotNull(style);

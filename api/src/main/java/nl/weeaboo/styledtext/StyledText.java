@@ -28,6 +28,20 @@ public final class StyledText extends AbstractStyledText<StyledText> {
         return new StyledText(len, text, toff, styles, soff);
     }
 
+    /**
+     * Simple string format function, converting patterns of the style <code>"abc {} def"</code> by replacing
+     * occurrences of <code>{}</code> with supplied arguments. This is chosen to be equivalent with the style
+     * of formatting used by SLF4J.
+     *
+     * @param formatString A string or {@link AbstractStyledText}.
+     * @param args Zero or more arguments to splice into the format string. Arguments are converted to
+     *             styled text representations.
+     */
+    public static StyledText format(CharSequence formatString, Object... args) {
+        StyledTextFormatter formatter = new StyledTextFormatter(formatString, args);
+        return formatter.format();
+    }
+
     public MutableStyledText mutableCopy() {
         // Copy arrays here because the constructor we call doesn't copy
         return new MutableStyledText(len, getChars(), 0, getStyles(), 0);
