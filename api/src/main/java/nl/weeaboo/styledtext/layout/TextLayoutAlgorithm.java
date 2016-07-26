@@ -35,7 +35,7 @@ final class TextLayoutAlgorithm implements RunHandler {
         endLine();
 
         float y = 0f;
-        CompositeTextLayout compositeLayout = new CompositeTextLayout();
+        CompositeTextLayout compositeLayout = new CompositeTextLayout(params.x, params.y, params.ydir);
         for (LineLayout line : finishedLines) {
             List<ITextElement> elems = line.layout(0f, y);
             // Note: layoutHeight isn't available until layout() is called

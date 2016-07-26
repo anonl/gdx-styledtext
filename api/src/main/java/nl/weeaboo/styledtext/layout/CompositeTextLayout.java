@@ -6,7 +6,7 @@ import java.util.List;
 
 import nl.weeaboo.styledtext.TextStyle;
 
-public class CompositeTextLayout implements ITextLayout {
+final class CompositeTextLayout implements ITextLayout {
 
     /**
      * No assumptions are made about the visual layout of the text. These layout elements may span multiple
@@ -19,11 +19,30 @@ public class CompositeTextLayout implements ITextLayout {
      */
     private final List<Line> lines = new ArrayList<Line>();
 
+    /**
+     * Y-axis direction; {@code -1} for y-up, {@code 1} for y-down.
+     * 
+     * @see LayoutParameters#ydir
+     */
+    private final int ydir;
+
     private int glyphCount;
     private float minX, minY, maxX, maxY;
 
-    private float originY;
+    private float dx, dy;
 
+    /**
+     * @see #getOffsetY()
+     */
+    public CompositeTextLayout(float dx, float dy, int ydir) {
+        this.dx = dx;
+        this.dy = dy;
+        this.ydir = ydir;
+    }
+
+    /**
+     * @param startY Line top y-position, relative to the layout's origin.
+     */
     void addLine(Collection<ITextElement> elems, float startY, float endY) {
         final int startGlyphIndex = glyphCount;
 
@@ -49,8 +68,18 @@ public class CompositeTextLayout implements ITextLayout {
     }
 
     @Override
+    public float getOffsetX() {
+        return dx;
+    }
+
+    @Override
+    public float getOffsetY() {
+        return dy;
+    }
+
+    @Override
     public float getOriginY() {
-        return originY;
+        return -getOffsetY();
     }
 
     @Override
@@ -143,9 +172,9 @@ public class CompositeTextLayout implements ITextLayout {
 
     @Override
     public ITextLayout getLineRange(int startLine, int endLine) {
-        CompositeTextLayout result = new CompositeTextLayout();
+        CompositeTextLayout result = new CompositeTextLayout(dx, dy, ydir);
         if (endLine > startLine) {
-            result.originY = getLineTop(startLine);
+            result.dy -= ydir * getLineTop(startLine);
 
             for (int lineNum = startLine; lineNum < endLine; lineNum++) {
                 Line line = getLine(lineNum);

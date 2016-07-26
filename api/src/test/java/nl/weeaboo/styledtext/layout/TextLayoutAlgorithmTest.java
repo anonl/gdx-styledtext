@@ -13,6 +13,8 @@ import nl.weeaboo.styledtext.TextStyle;
 
 public class TextLayoutAlgorithmTest {
 
+    private static final float EPSILON = .001f;
+
     private final TextLayoutAlgorithm algo = new TextLayoutAlgorithm(new BasicFontStore());
 
     // Using dummy font store makes each glyph (fontSize x fontSize)
@@ -92,6 +94,22 @@ public class TextLayoutAlgorithmTest {
         assertLayout(layout, "    abc  ");
     }
 
+    /** Handling of non-zero X/Y offsets in layout params */
+    @Test
+    public void layoutOffsets() {
+        params.x = 5f;
+        params.y = 10f;
+
+        ITextLayout layout = layout("abc def\nghi");
+        assertPosOffset(layout, 5f, 10f);
+
+        Assert.assertEquals(2, layout.getLineCount());
+
+        // Split after line 1
+        layout = layout.getLineRange(1, layout.getLineCount());
+        assertPosOffset(layout, 5f, 10f - 1 * style.getFontSize());
+    }
+
     private static void assertLayout(ITextLayout layout, String... lines) {
         // First check if line count matches
         Assert.assertEquals(lines.length, layout.getLineCount());
@@ -141,6 +159,11 @@ public class TextLayoutAlgorithmTest {
         }
 
         Assert.assertEquals(message, runString, sb.toString());
+    }
+
+    private static void assertPosOffset(ITextLayout layout, float dx, float dy) {
+        Assert.assertEquals(dx, layout.getOffsetX(), EPSILON);
+        Assert.assertEquals(dy, layout.getOffsetY(), EPSILON);
     }
 
     private ITextLayout layout(String str) {

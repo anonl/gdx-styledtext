@@ -8,9 +8,26 @@ public interface ITextLayout extends IGlyphSequence {
     Iterable<ITextElement> getElements();
 
     /**
+     * Relative x-offset of the layout when rendering.
+     *
+     * @see #getOffsetY()
+     */
+    float getOffsetX();
+
+    /**
+     * Relative y-offset of the layout when rendering.
+     *
+     * @see #getOffsetX()
+     */
+    float getOffsetY();
+
+    /**
      * The position of the y-origin to be used when rendering this layout. For example if a layout element has
      * a y of {@code 100} and the origin is {@code 20}, the element should be rendered at {@code +80}.
+     *
+     * @deprecated Replaced with {@link #getOffsetY}
      */
+    @Deprecated
     float getOriginY();
 
     float getTextWidth();

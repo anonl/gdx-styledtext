@@ -8,4 +8,7 @@ public class LayoutParameters {
     /** Y-axis direction; {@code -1} for y-up, {@code 1} for y-down. */
     public int ydir = -1;
 
+    public float x;
+    public float y;
+
 }

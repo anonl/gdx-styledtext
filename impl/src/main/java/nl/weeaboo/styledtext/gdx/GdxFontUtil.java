@@ -33,7 +33,8 @@ public final class GdxFontUtil {
             visibleGlyphs = 1e9f;
         }
 
-        dy -= layout.getOriginY();
+        dx += layout.getOffsetX();
+        dy += layout.getOffsetY();
         for (ILayoutElement elem : layout.getElements()) {
             if (!(elem instanceof GdxTextElement)) {
                 continue;
