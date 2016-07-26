@@ -107,7 +107,7 @@ public class TextLayoutAlgorithmTest {
 
         // Split after line 1
         layout = layout.getLineRange(1, layout.getLineCount());
-        assertPosOffset(layout, 5f, 10f - 1 * style.getFontSize());
+        assertPosOffset(layout, 5f, 10f + params.ydir * style.getFontSize());
     }
 
     private static void assertLayout(ITextLayout layout, String... lines) {
