@@ -11,6 +11,7 @@ import nl.weeaboo.gdx.test.GdxRenderTest;
 import nl.weeaboo.gdx.test.junit.GdxLwjgl3TestRunner;
 import nl.weeaboo.styledtext.MutableStyledText;
 import nl.weeaboo.styledtext.StyledText;
+import nl.weeaboo.styledtext.layout.ITextLayout;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
 
 @RunWith(GdxLwjgl3TestRunner.class)
@@ -73,6 +74,24 @@ public class TextRenderTest extends GdxRenderTest {
 
         String text = "A A A A \nA\n A\n  A\n   A\n\tA";
         checkRenderResult("word-wrap", renderText(new StyledText(text, SERIF_32), -1f, params));
+    }
+
+    @Test
+    public void subLayout() {
+        LayoutParameters params = new LayoutParameters();
+        params.x = 10;
+        params.y = 20;
+
+        StyledText text = new StyledText("ABC\nDEF\nGHI", SERIF_32);
+        ITextLayout full = layout(text, params);
+
+        checkRenderResult("sublayout0", renderText(full, -1f, params));
+
+        // Sub-layout from line 1+ onwards
+        checkRenderResult("sublayout1", renderText(full.getLineRange(1, 3), -1f, params));
+
+        // Sub-sub-layout (generated from another sub-layout)
+        checkRenderResult("sublayout2", renderText(full.getLineRange(1, 3).getLineRange(1, 2), -1f, params));
     }
 
 }

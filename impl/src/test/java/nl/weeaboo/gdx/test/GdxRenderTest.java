@@ -70,8 +70,15 @@ public class GdxRenderTest {
     }
 
     protected Rectangle renderText(StyledText text, float visibleChars, LayoutParameters params) {
-        ITextLayout layout = LayoutUtil.layout(fontStore, text, params);
+        ITextLayout layout = layout(text, params);
+        return renderText(layout, visibleChars, params);
+    }
 
+    protected ITextLayout layout(StyledText text, LayoutParameters params) {
+        return LayoutUtil.layout(fontStore, text, params);
+    }
+
+    protected Rectangle renderText(ITextLayout layout, float visibleChars, LayoutParameters params) {
         float th = layout.getTextHeight();
         float tw = layout.getTextWidth();
 
@@ -80,7 +87,7 @@ public class GdxRenderTest {
         clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
         batch.begin();
-        GdxFontUtil.draw(batch, layout, pad, pad + th, visibleChars);
+        GdxFontUtil.draw(batch, layout, pad - params.x, pad + th - params.y, visibleChars);
         batch.end();
 
         return bounds;

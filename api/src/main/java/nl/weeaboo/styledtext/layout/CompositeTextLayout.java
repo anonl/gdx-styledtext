@@ -21,7 +21,7 @@ final class CompositeTextLayout implements ITextLayout {
 
     /**
      * Y-axis direction; {@code -1} for y-up, {@code 1} for y-down.
-     * 
+     *
      * @see LayoutParameters#ydir
      */
     private final int ydir;
@@ -61,10 +61,17 @@ final class CompositeTextLayout implements ITextLayout {
         elems.add(new Elem(elem, start, end));
         glyphCount += len;
 
-        minX = Math.min(minX, elem.getX());
-        minY = Math.min(minY, elem.getY());
-        maxX = Math.max(maxX, elem.getX() + elem.getLayoutWidth());
-        maxY = Math.max(maxY, elem.getY() + elem.getLayoutHeight());
+        if (elems.size() == 1) {
+            minX = elem.getX();
+            minY = elem.getY();
+            maxX = elem.getX() + elem.getLayoutWidth();
+            maxY = elem.getY() + elem.getLayoutHeight();
+        } else {
+            minX = Math.min(minX, elem.getX());
+            minY = Math.min(minY, elem.getY());
+            maxX = Math.max(maxX, elem.getX() + elem.getLayoutWidth());
+            maxY = Math.max(maxY, elem.getY() + elem.getLayoutHeight());
+        }
     }
 
     @Override
@@ -174,7 +181,8 @@ final class CompositeTextLayout implements ITextLayout {
     public ITextLayout getLineRange(int startLine, int endLine) {
         CompositeTextLayout result = new CompositeTextLayout(dx, dy, ydir);
         if (endLine > startLine) {
-            result.dy -= ydir * getLineTop(startLine);
+            result.dy -= ydir * getLineTop(0);
+            result.dy += ydir * getLineTop(startLine);
 
             for (int lineNum = startLine; lineNum < endLine; lineNum++) {
                 Line line = getLine(lineNum);
