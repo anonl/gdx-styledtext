@@ -137,7 +137,7 @@ final class GdxTextElement extends TextElement {
     }
 
     private void drawLayout(Batch batch, GlyphLayout glyphLayout, float dx, float dy) {
-        dy += (ydown ? font.getAscent() : -font.getAscent());
+        dy -= font.getAscent();
         font.draw(batch, glyphLayout, getX() + dx, getY() + dy);
     }
 
@@ -148,10 +148,12 @@ final class GdxTextElement extends TextElement {
         }
 
         float thickness = underlineMetrics.getUnderlineThickness();
-        float underlineDy = ascent - underlineMetrics.getUnderlinePosition();
-        if (!ydown) {
+
+        float underlineDy = underlineMetrics.getUnderlinePosition() - font.getCapHeight();
+        if (ydown) {
             underlineDy = -underlineDy;
         }
+        underlineDy -= font.getAscent();
 
         float x = getX() + dx;
         float y = getY() + dy + underlineDy - thickness / 2;

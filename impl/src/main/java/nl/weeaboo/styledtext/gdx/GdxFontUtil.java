@@ -1,6 +1,5 @@
 package nl.weeaboo.styledtext.gdx;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
@@ -8,12 +7,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Face;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.Logger;
 
 import nl.weeaboo.styledtext.TextStyle;
@@ -51,53 +48,28 @@ public final class GdxFontUtil {
         }
     }
 
+    /** @deprecated Use {@link GdxFontGenerator} */
+    @Deprecated
     public static GdxFontInfo load(String fontPath, TextStyle style) throws IOException {
         FileHandle fontFile = Gdx.files.internal(fontPath);
         return load(fontFile, style);
     }
+
+    /** @deprecated Use {@link GdxFontGenerator} */
+    @Deprecated
     public static GdxFontInfo load(FileHandle fontFile, TextStyle style) throws IOException {
         int pixelSize = Math.round(style.getFontSize());
         return load(fontFile, style, new int[] { pixelSize })[0];
     }
+
+    /** @deprecated Use {@link GdxFontGenerator} */
+    @Deprecated
     public static GdxFontInfo[] load(FileHandle fontFile, TextStyle style, int[] sizes) throws IOException {
-        if (!fontFile.exists()) {
-            throw new FileNotFoundException(fontFile.toString());
-        }
-
-        GdxFontInfo[] result = new GdxFontInfo[sizes.length];
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
-        try {
-            for (int n = 0; n < sizes.length; n++) {
-                FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-                parameter.size = sizes[n];
-
-                if (!GdxFontUtil.isColorizable(style)) {
-                    parameter.color = GdxFontUtil.argb8888ToColor(style.getColor());
-                }
-
-                parameter.borderColor = argb8888ToColor(style.getOutlineColor());
-                parameter.borderWidth = style.getOutlineSize();
-
-                parameter.shadowColor = argb8888ToColor(style.getShadowColor());
-                parameter.shadowOffsetX = Math.round(style.getShadowDx());
-                parameter.shadowOffsetY = Math.round(style.getShadowDy());
-
-                BitmapFont bmFont = generator.generateFont(parameter);
-                bmFont.setUseIntegerPositions(true);
-
-                UnderlineMetrics underlineMetrics = deriveUnderlineMetrics(generator, sizes[n]);
-
-                result[n] = new GdxFontInfo(style, bmFont, sizes[n], underlineMetrics);
-            }
-        } finally {
-            generator.dispose();
-        }
-
-        return result;
+        GdxFontGenerator generator = new GdxFontGenerator();
+        return generator.load(fontFile, style, sizes);
     }
 
-    private static UnderlineMetrics deriveUnderlineMetrics(FreeTypeFontGenerator generator, int size) {
+    static UnderlineMetrics deriveUnderlineMetrics(FreeTypeFontGenerator generator, int size) {
         try {
             // Size metrics aren't publicly accessible (as of 1.9.3). (Ab)use reflection to gain access.
             Field faceField = FreeTypeFontGenerator.class.getDeclaredField("face");

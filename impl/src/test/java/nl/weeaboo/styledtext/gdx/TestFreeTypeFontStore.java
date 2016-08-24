@@ -17,7 +17,11 @@ public class TestFreeTypeFontStore extends GdxFontStore {
     public static final TextStyle SERIF_32 = textStyle("RobotoSlab", 32);
     public static final TextStyle SERIF_32_ITALIC = new TextStyle("RobotoSlab", EFontStyle.ITALIC, 32);
 
-    public TestFreeTypeFontStore() {
+    private final YDir ydir;
+
+    public TestFreeTypeFontStore(YDir ydir) {
+        this.ydir = ydir;
+
         try {
             register(SERIF_16);
             register(SERIF_32);
@@ -36,7 +40,9 @@ public class TestFreeTypeFontStore extends GdxFontStore {
         Assert.assertNotNull(fontName);
 
         String filename = "font/" + fontName + ".ttf";
-        registerFont(GdxFontUtil.load(filename, style));
+        GdxFontGenerator generator = new GdxFontGenerator();
+        generator.setYDir(ydir);
+        registerFont(generator.load(filename, style));
     }
 
     @Override

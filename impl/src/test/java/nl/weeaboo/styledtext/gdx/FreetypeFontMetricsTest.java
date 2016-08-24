@@ -24,7 +24,7 @@ public class FreetypeFontMetricsTest {
 
     @Before
     public void before() {
-        fontStore = new TestFreeTypeFontStore();
+        fontStore = new TestFreeTypeFontStore(YDir.DOWN);
     }
 
     /** Check that the generated bitmap fonts match expectations */

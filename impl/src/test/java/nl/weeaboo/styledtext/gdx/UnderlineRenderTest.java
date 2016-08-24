@@ -27,7 +27,7 @@ public class UnderlineRenderTest extends GdxRenderTest {
 
     @Before
     public void before() throws IOException {
-        // this.generate = true;
+        this.generate = false;
 
         MutableTextStyle mts = SERIF_32.mutableCopy();
         mts.setUnderlined(true);

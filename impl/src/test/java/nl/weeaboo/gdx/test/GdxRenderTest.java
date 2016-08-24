@@ -9,6 +9,7 @@ import org.junit.experimental.categories.Category;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,6 +22,7 @@ import nl.weeaboo.gdx.test.pixmap.ScreenshotHelper;
 import nl.weeaboo.styledtext.StyledText;
 import nl.weeaboo.styledtext.gdx.GdxFontUtil;
 import nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore;
+import nl.weeaboo.styledtext.gdx.YDir;
 import nl.weeaboo.styledtext.layout.ITextLayout;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
 import nl.weeaboo.styledtext.layout.LayoutUtil;
@@ -31,6 +33,8 @@ public class GdxRenderTest {
     // Allow a small difference in color to account for rounding errors
     private static final int MAX_COLOR_DIFF = 2;
 
+    protected final YDir ydir;
+
     protected boolean generate = false;
     protected SpriteBatch batch;
     protected TestFreeTypeFontStore fontStore;
@@ -40,11 +44,15 @@ public class GdxRenderTest {
     private ShapeRenderer shapeRenderer;
     private PixmapEquality pixmapEquals;
 
+    public GdxRenderTest() {
+        ydir = YDir.UP;
+    }
+
     @Before
     public final void beforeRenderTest() {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        fontStore = new TestFreeTypeFontStore();
+        fontStore = new TestFreeTypeFontStore(ydir);
 
         pixmapEquals = new PixmapEquality();
         pixmapEquals.setMaxColorDiff(MAX_COLOR_DIFF);
@@ -75,6 +83,7 @@ public class GdxRenderTest {
     }
 
     protected ITextLayout layout(StyledText text, LayoutParameters params) {
+        params.ydir = ydir.toInt();
         return LayoutUtil.layout(fontStore, text, params);
     }
 
@@ -83,11 +92,18 @@ public class GdxRenderTest {
         float tw = layout.getTextWidth();
 
         Rectangle bounds = new Rectangle2D.Float(0, 0, tw + pad * 2, th + pad * 2).getBounds();
-
         clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
+        OrthographicCamera camera = new OrthographicCamera();
+        camera.setToOrtho(params.ydir > 0);
+        batch.setProjectionMatrix(camera.combined);
+
         batch.begin();
-        GdxFontUtil.draw(batch, layout, pad - params.x, pad + th - params.y, visibleChars);
+        if (params.ydir > 0) {
+            GdxFontUtil.draw(batch, layout, pad - params.x, camera.viewportHeight - pad - th - params.y, visibleChars);
+        } else {
+            GdxFontUtil.draw(batch, layout, pad - params.x, pad + th - params.y, visibleChars);
+        }
         batch.end();
 
         return bounds;
