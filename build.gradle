@@ -47,8 +47,10 @@ subprojects {
             }
         }
         
+        def uiTest = project.hasProperty('uiTest')
+        inputs.property('uiTest', uiTest) // Re-execute task if uiTest property changes        
         useJUnit {
-            if (!project.hasProperty('uiTest')) {            
+            if (!uiTest) {            
                 // Exclude UI tests by default
                 excludeCategories 'nl.weeaboo.gdx.test.junit.GdxUiTest'
             }
