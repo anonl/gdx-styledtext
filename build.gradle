@@ -6,7 +6,7 @@ plugins {
 allprojects {
     apply plugin: "maven-publish"
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '1.5.3'
+    version = '1.5.4'
     
     repositories {
         mavenCentral()
