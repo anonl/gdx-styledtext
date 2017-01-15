@@ -16,7 +16,7 @@ public class RunSplitter {
     private StyledText stext;
     private Bidi bidi;
 
-	private int index;
+    private int index;
     private int nextBreakBoundary;
 
     private final RunState currentRun = new RunState();
@@ -26,7 +26,7 @@ public class RunSplitter {
         this.lineBreaker = lineBreaker;
         this.isBaseRightToLeft = isRightToLeft;
         this.runHandler = runHandler;
-	}
+    }
 
     public static void run(StyledText stext, boolean isRightToLeft, RunHandler runHandler) {
         BreakIterator breakIterator = BreakIterator.getLineInstance(Locale.ROOT);
@@ -38,10 +38,10 @@ public class RunSplitter {
 
         RunSplitter ss = new RunSplitter(wordIterator, isRightToLeft, runHandler);
         ss.setText(stext);
-		while (!ss.isDone()) {
+        while (!ss.isDone()) {
             ss.processCodepoint();
-		}
-	}
+        }
+    }
 
     private void setText(StyledText str) {
         stext = str;
@@ -96,23 +96,23 @@ public class RunSplitter {
         if (isBoundary(currentRun, nextRun)) {
             if (currentRun.shouldProcess()) {
                 processRun(currentRun);
-			}
+            }
             currentRun.set(nextRun);
         } else {
             currentRun.append(nextRun);
-		}
+        }
 
         // Go look for the next line break boundary if needed
         while (index > nextBreakBoundary && nextBreakBoundary != BreakIterator.DONE) {
             nextBreakBoundary = lineBreaker.next();
         }
 
-		//Process the final pending run if otherwise finished
+        //Process the final pending run if otherwise finished
         if (isDone() && currentRun.shouldProcess()) {
             processRun(currentRun);
             currentRun.reset();
-		}
-	}
+        }
+    }
 
     private void processRun(RunState rs) {
         runHandler.processRun(stext.substring(rs.startIndex, rs.endIndex), rs);

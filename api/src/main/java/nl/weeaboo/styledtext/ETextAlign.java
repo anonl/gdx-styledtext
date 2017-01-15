@@ -32,14 +32,14 @@ public enum ETextAlign {
      * @return The enum value matching the given string representation, or {@code null} if no match is found.
      *         The matching algorithm is case-sensitive.
      */
-	public static ETextAlign fromString(String str) {
-		for (ETextAlign a : values()) {
-			if (a.toString().equals(str)) {
-				return a;
-			}
-		}
-		return null;
-	}
+    public static ETextAlign fromString(String str) {
+        for (ETextAlign a : values()) {
+            if (a.toString().equals(str)) {
+                return a;
+            }
+        }
+        return null;
+    }
 
     /**
      * @return {@code -1} if left-aligned, {@code 0} if center-aligned, {@code 1} if right-aligned.

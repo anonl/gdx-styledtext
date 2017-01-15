@@ -31,8 +31,8 @@ subprojects {
     compileJava.options.encoding = 'UTF-8'
     compileTestJava.options.encoding = 'UTF-8'
     
-	dependencies {
-    	testCompile "junit:junit:$junitVersion"
+    dependencies {
+        testCompile "junit:junit:$junitVersion"
         testCompile "nl.weeaboo.gdx-test:gdx-test-core:$gdxTestVersion"
     }
     
@@ -73,7 +73,7 @@ project(":styledtext-impl") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"        
 
         testCompile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-		testRuntime "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testRuntime "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         testRuntime "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     }
 }
@@ -97,15 +97,15 @@ publishing {
     }
 }
 
-bintray {	
-	user = System.getenv('BINTRAY_USER')
-	key = System.getenv('BINTRAY_KEY')
-	publications = ['api', 'impl']
-	pkg {
-		repo = 'gdx-styledtext'
-		name = 'gdx-styledtext'
-		licenses = ['Apache-2.0']
-		vcsUrl = 'https://github.com/anonl/gdx-styledtext.git'
+bintray {    
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['api', 'impl']
+    pkg {
+        repo = 'gdx-styledtext'
+        name = 'gdx-styledtext'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/anonl/gdx-styledtext.git'
         version {
             name = project.version
         }
