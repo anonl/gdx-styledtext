@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import nl.weeaboo.gdx.test.GdxRenderTest;
 import nl.weeaboo.gdx.test.junit.GdxLwjgl3TestRunner;
 import nl.weeaboo.styledtext.MutableStyledText;
 import nl.weeaboo.styledtext.StyledText;

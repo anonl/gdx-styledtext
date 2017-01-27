@@ -1,4 +1,4 @@
-package nl.weeaboo.gdx.test;
+package nl.weeaboo.styledtext.gdx;
 
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
@@ -21,7 +21,6 @@ import nl.weeaboo.gdx.test.pixmap.PixmapEquality;
 import nl.weeaboo.gdx.test.pixmap.ScreenshotHelper;
 import nl.weeaboo.styledtext.StyledText;
 import nl.weeaboo.styledtext.gdx.GdxFontUtil;
-import nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore;
 import nl.weeaboo.styledtext.gdx.YDir;
 import nl.weeaboo.styledtext.layout.ITextLayout;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
