@@ -23,7 +23,7 @@ subprojects {
     ext {
         gdxVersion = '1.9.3'
         junitVersion = '4.12'
-        gdxTestVersion = '1.0.1'
+        gdxTestVersion = '1.0.4'
     }
     
     sourceCompatibility = 1.6

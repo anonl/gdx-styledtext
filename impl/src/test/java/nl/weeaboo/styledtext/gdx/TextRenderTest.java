@@ -18,7 +18,7 @@ public class TextRenderTest extends GdxRenderTest {
 
     @Before
     public void before() {
-        // this.generate = true;
+        // generate = true;
     }
 
     @Test
@@ -73,6 +73,13 @@ public class TextRenderTest extends GdxRenderTest {
 
         String text = "A A A A \nA\n A\n  A\n   A\n\tA";
         checkRenderResult("word-wrap", renderText(new StyledText(text, SERIF_32), -1f, params));
+    }
+
+    /** Whitespace is normally collapsed, but multiple newlines should never be collapsed together. */
+    @Test
+    public void multipleNewlines() {
+        String text = "A\n\nA";
+        checkRenderResult("multiple-newlines", renderText(new StyledText(text, SERIF_32)));
     }
 
     @Test

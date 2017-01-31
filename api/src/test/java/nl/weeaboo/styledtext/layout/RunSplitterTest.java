@@ -23,7 +23,7 @@ public class RunSplitterTest {
         assertSplit("test\n", "test", "\n");
         assertSplit(" test\n", " ", "test", "\n");
         assertSplit(" test \n", " ", "test", " ", "\n");
-        assertSplit("\n\n", "\n", "\n");
+        assertSplit("\n\n\n", "\n", "\n", "\n");
     }
 
     @Test

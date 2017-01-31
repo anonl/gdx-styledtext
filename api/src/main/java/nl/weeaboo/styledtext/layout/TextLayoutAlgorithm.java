@@ -107,6 +107,8 @@ final class TextLayoutAlgorithm implements RunHandler {
             elem.setParameters(params);
 
             layoutWidth += elem.getLayoutWidth();
+            layoutHeight = Math.max(layoutHeight, elem.getLayoutHeight());
+
             if (elem instanceof ITextElement) {
                 ITextElement textElem = (ITextElement)elem;
                 maxAscent = Math.max(maxAscent, textElem.getAscent());
@@ -154,12 +156,13 @@ final class TextLayoutAlgorithm implements RunHandler {
                 newElements = LayoutUtil.visualSortedCopy(newElements);
             }
 
-            // Position text elements and calculate line width/height
+            // Position text elements and recalculate the new line width
             layoutWidth = 0f;
-            layoutHeight = 0f;
             ILayoutElement prev = null;
             for (ILayoutElement elem : newElements) {
-                x += LayoutUtil.getKerningOffset(prev, elem);
+                float kernOffsetX = LayoutUtil.getKerningOffset(prev, elem);
+                x += kernOffsetX;
+                layoutWidth += kernOffsetX;
 
                 if (elem instanceof ITextElement) {
                     ITextElement text = (ITextElement)elem;
@@ -173,7 +176,6 @@ final class TextLayoutAlgorithm implements RunHandler {
 
                 x += elem.getLayoutWidth();
                 layoutWidth += elem.getLayoutWidth();
-                layoutHeight = Math.max(layoutHeight, elem.getLayoutHeight());
 
                 prev = elem;
             }
