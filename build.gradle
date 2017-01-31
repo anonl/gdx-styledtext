@@ -1,35 +1,38 @@
 
 plugins {
-    id "com.jfrog.bintray" version "1.6"
+    id 'com.jfrog.bintray' version '1.7.3'
 }
 
 allprojects {
-    apply plugin: "maven-publish"
+    apply plugin: 'maven-publish'
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '1.5.4'
+    version = '1.7.3'
     
     repositories {
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        jcenter()
         maven { url "https://dl.bintray.com/anonl/gdx/" }
     }    
 }
 
 subprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
-    apply plugin: "java"
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
     
     ext {
+        javaVersion = JavaVersion.VERSION_1_6
+
         gdxVersion = '1.9.3'
         junitVersion = '4.12'
         gdxTestVersion = '1.0.4'
     }
     
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
-    compileJava.options.encoding = 'UTF-8'
-    compileTestJava.options.encoding = 'UTF-8'
+    sourceCompatibility = javaVersion
+    
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
     
     dependencies {
         testCompile "junit:junit:$junitVersion"
@@ -60,6 +63,12 @@ subprojects {
     task sourceJar(type: Jar) {
         from sourceSets.main.allJava
         classifier "sources"
+    }
+    
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+        }
     }
 }
 
