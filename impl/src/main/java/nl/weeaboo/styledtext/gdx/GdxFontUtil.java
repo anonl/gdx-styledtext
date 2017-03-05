@@ -1,10 +1,7 @@
 package nl.weeaboo.styledtext.gdx;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType;
@@ -46,27 +43,6 @@ public final class GdxFontUtil {
                 break;
             }
         }
-    }
-
-    /** @deprecated Use {@link GdxFontGenerator} */
-    @Deprecated
-    public static GdxFontInfo load(String fontPath, TextStyle style) throws IOException {
-        FileHandle fontFile = Gdx.files.internal(fontPath);
-        return load(fontFile, style);
-    }
-
-    /** @deprecated Use {@link GdxFontGenerator} */
-    @Deprecated
-    public static GdxFontInfo load(FileHandle fontFile, TextStyle style) throws IOException {
-        int pixelSize = Math.round(style.getFontSize());
-        return load(fontFile, style, new int[] { pixelSize })[0];
-    }
-
-    /** @deprecated Use {@link GdxFontGenerator} */
-    @Deprecated
-    public static GdxFontInfo[] load(FileHandle fontFile, TextStyle style, int[] sizes) throws IOException {
-        GdxFontGenerator generator = new GdxFontGenerator();
-        return generator.load(fontFile, style, sizes);
     }
 
     static UnderlineMetrics deriveUnderlineMetrics(FreeTypeFontGenerator generator, int size) {

@@ -11,7 +11,6 @@ import nl.weeaboo.styledtext.EFontStyle;
 import nl.weeaboo.styledtext.TextStyle;
 import nl.weeaboo.styledtext.layout.IFontMetrics;
 import nl.weeaboo.styledtext.layout.IFontStore;
-import nl.weeaboo.styledtext.layout.UnderlineMetrics;
 
 public class GdxFontStore implements IFontStore, Disposable {
 
@@ -32,14 +31,6 @@ public class GdxFontStore implements IFontStore, Disposable {
         fonts.clear();
     }
 
-    /**
-     * @deprecated Use {@link #registerFont(GdxFontInfo)} instead.
-     */
-    @Deprecated
-    public void registerFont(String name, EFontStyle style, BitmapFont font, int pixelSize) {
-        TextStyle ts = new TextStyle(name, style, pixelSize);
-        registerFont(new GdxFontInfo(ts, font, pixelSize, UnderlineMetrics.NONE));
-    }
     public void registerFont(GdxFontInfo fontInfo) {
         fonts.add(fontInfo);
     }

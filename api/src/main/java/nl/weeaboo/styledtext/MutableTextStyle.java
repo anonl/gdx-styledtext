@@ -35,24 +35,8 @@ public final class MutableTextStyle extends AbstractTextStyle {
         extendAttributes(attributes, ext.attributes);
     }
 
-    /**
-     * @deprecated Use {@link #removeAttribute(ETextAttribute)} instead.
-     */
-    @Deprecated
-    public void removeProperty(ETextAttribute key) {
-        removeAttribute(key);
-    }
-
     public void removeAttribute(ETextAttribute key) {
         attributes.remove(key);
-    }
-
-    /**
-     * @deprecated Use {@link #setAttribute(ETextAttribute, Object)} instead.
-     */
-    @Deprecated
-    public void setProperty(ETextAttribute key, Object value) {
-        setAttribute(key, value);
     }
 
     public void setAttribute(ETextAttribute attr, Object value) {

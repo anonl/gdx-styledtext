@@ -6,7 +6,7 @@ plugins {
 allprojects {
     apply plugin: 'maven-publish'
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '1.7.3'
+    version = '2.0.0'
     
     repositories {
         jcenter()
@@ -23,9 +23,9 @@ subprojects {
     ext {
         javaVersion = JavaVersion.VERSION_1_6
 
-        gdxVersion = '1.9.3'
+        gdxVersion = '1.9.6'
         junitVersion = '4.12'
-        gdxTestVersion = '1.0.4'
+        gdxTestVersion = '2.0.0'
     }
     
     sourceCompatibility = javaVersion

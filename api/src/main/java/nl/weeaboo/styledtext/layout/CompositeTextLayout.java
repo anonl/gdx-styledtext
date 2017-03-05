@@ -85,11 +85,6 @@ final class CompositeTextLayout implements ITextLayout {
     }
 
     @Override
-    public float getOriginY() {
-        return -getOffsetY();
-    }
-
-    @Override
     public float getTextWidth() {
         return maxX - minX;
     }

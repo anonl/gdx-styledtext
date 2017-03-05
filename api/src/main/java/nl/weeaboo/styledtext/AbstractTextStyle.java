@@ -70,24 +70,8 @@ abstract class AbstractTextStyle implements Serializable {
         return sb.toString();
     }
 
-    /**
-     * @deprecated Use {@link #hasAttribute(ETextAttribute)} instead.
-     */
-    @Deprecated
-    public boolean hasProperty(ETextAttribute key) {
-        return hasAttribute(key);
-    }
-
     public boolean hasAttribute(ETextAttribute attr) {
         return attributes.containsKey(attr);
-    }
-
-    /**
-     * @deprecated Use {@link #getAttribute(ETextAttribute, Object)} instead.
-     */
-    @Deprecated
-    public Object getProperty(ETextAttribute key, Object fallback) {
-        return getAttribute(key, fallback);
     }
 
     public Object getAttribute(ETextAttribute attr, Object defaultValue) {
