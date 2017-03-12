@@ -6,7 +6,7 @@ plugins {
 allprojects {
     apply plugin: 'maven-publish'
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '2.0.0'
+    version = '2.0.1'
     
     repositories {
         jcenter()
@@ -26,6 +26,17 @@ subprojects {
         gdxVersion = '1.9.6'
         junitVersion = '4.12'
         gdxTestVersion = '2.0.0'
+
+        pomLicenseConfig = {
+           licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    distribution 'repo'
+                }
+            }
+        }
+        pomLicenseConfig.resolveStrategy = Closure.DELEGATE_ONLY // Otherwise 'license' elem is missing
     }
     
     sourceCompatibility = javaVersion
@@ -95,6 +106,10 @@ publishing {
             def proj = project(":styledtext-api")
             from proj.components.java            
             artifact(proj.sourceJar)            
+
+            pom.withXml {
+                asNode().children().last() + proj.ext.pomLicenseConfig
+            }  
         }
         impl(MavenPublication) {
             artifactId = 'styledtext-impl'
@@ -102,6 +117,10 @@ publishing {
             def proj = project(":styledtext-impl")
             from proj.components.java            
             artifact(proj.sourceJar)            
+
+            pom.withXml {
+                asNode().children().last() + proj.ext.pomLicenseConfig
+            }  
         }
     }
 }
