@@ -37,7 +37,7 @@ public class UnderlineRenderTest extends GdxRenderTest {
     @Test
     public void underlineMetrics() {
         UnderlineMetrics metrics = fontStore.getFontMetrics(SERIF_32).getUnderlineMetrics();
-        Assert.assertEquals(-4f, metrics.getUnderlinePosition(), EPSILON);
+        Assert.assertEquals(-3f, metrics.getUnderlinePosition(), EPSILON);
         Assert.assertEquals(2f, metrics.getUnderlineThickness(), EPSILON);
     }
 
