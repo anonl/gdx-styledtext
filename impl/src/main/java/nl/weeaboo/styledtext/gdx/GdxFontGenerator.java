@@ -15,6 +15,7 @@ import nl.weeaboo.styledtext.layout.UnderlineMetrics;
 public final class GdxFontGenerator {
 
     private YDir ydir = YDir.UP;
+    private boolean incremental = true;
 
     public GdxFontGenerator() {
     }
@@ -22,6 +23,15 @@ public final class GdxFontGenerator {
     /** Y-axis direction */
     public void setYDir(YDir dir) {
         this.ydir = dir;
+    }
+
+    /**
+     * Switches between incremental font rendering, and rendering all characters immediately on load.
+     *
+     * @see FreeTypeFontParameter#incremental
+     */
+    public void setIncremental(boolean incremental) {
+        this.incremental = incremental;
     }
 
     public GdxFontInfo load(String fontPath, TextStyle style) throws IOException {
@@ -41,33 +51,38 @@ public final class GdxFontGenerator {
 
         GdxFontInfo[] result = new GdxFontInfo[sizes.length];
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
-        try {
-            for (int n = 0; n < sizes.length; n++) {
-                final FreeTypeFontParameter params = new FreeTypeFontParameter();
-                params.flip = (ydir == YDir.DOWN);
-                params.size = sizes[n];
+        for (int n = 0; n < sizes.length; n++) {
+            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
 
-                if (!GdxFontUtil.isColorizable(style)) {
-                    params.color = GdxFontUtil.argb8888ToColor(style.getColor());
-                }
+            final FreeTypeFontParameter params = new FreeTypeFontParameter();
+            params.flip = (ydir == YDir.DOWN);
+            params.size = sizes[n];
 
-                params.borderColor = GdxFontUtil.argb8888ToColor(style.getOutlineColor());
-                params.borderWidth = style.getOutlineSize();
-
-                params.shadowColor = GdxFontUtil.argb8888ToColor(style.getShadowColor());
-                params.shadowOffsetX = Math.round(style.getShadowDx());
-                params.shadowOffsetY = Math.round(style.getShadowDy());
-
-                BitmapFont bmFont = generator.generateFont(params);
-                bmFont.setUseIntegerPositions(true);
-
-                UnderlineMetrics underlineMetrics = GdxFontUtil.deriveUnderlineMetrics(generator, sizes[n]);
-
-                result[n] = new GdxFontInfo(style, bmFont, sizes[n], underlineMetrics);
+            if (!GdxFontUtil.isColorizable(style)) {
+                params.color = GdxFontUtil.argb8888ToColor(style.getColor());
             }
-        } finally {
-            generator.dispose();
+
+            params.borderColor = GdxFontUtil.argb8888ToColor(style.getOutlineColor());
+            params.borderWidth = style.getOutlineSize();
+
+            params.shadowColor = GdxFontUtil.argb8888ToColor(style.getShadowColor());
+            params.shadowOffsetX = Math.round(style.getShadowDx());
+            params.shadowOffsetY = Math.round(style.getShadowDy());
+
+            params.incremental = incremental;
+
+            BitmapFont bmFont = generator.generateFont(params);
+            bmFont.setUseIntegerPositions(true);
+
+            UnderlineMetrics underlineMetrics = GdxFontUtil.deriveUnderlineMetrics(generator, sizes[n]);
+
+            GdxFontInfo fontInfo = new GdxFontInfo(style, bmFont, sizes[n], underlineMetrics);
+            if (incremental) {
+                fontInfo.generator = generator;
+            } else {
+                generator.dispose();
+            }
+            result[n] = fontInfo;
         }
 
         return result;

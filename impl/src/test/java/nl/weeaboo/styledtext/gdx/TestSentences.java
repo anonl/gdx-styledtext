@@ -10,6 +10,10 @@ public final class TestSentences {
     public static final String ASCII_SYMBOLS =
             "!@#$%^&*?_-+=<>()[]{},.;:'\"";
 
+    /** Popular non-ASCII characters */
+    public static final String UNICODE_SYMBOLS =
+            "—…";
+
     private TestSentences() {
     }
 

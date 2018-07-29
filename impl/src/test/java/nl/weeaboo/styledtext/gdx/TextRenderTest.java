@@ -18,7 +18,7 @@ public class TextRenderTest extends GdxRenderTest {
 
     @Before
     public void before() {
-        // generate = true;
+        generate = true;
     }
 
     @Test
@@ -34,6 +34,11 @@ public class TextRenderTest extends GdxRenderTest {
     @Test
     public void symbols() {
         checkRenderResult("symbols", renderText(new StyledText(TestSentences.ASCII_SYMBOLS, SERIF_32)));
+    }
+
+    @Test
+    public void unicode() {
+        checkRenderResult("unicode", renderText(new StyledText(TestSentences.UNICODE_SYMBOLS, SERIF_32)));
     }
 
     @Test
