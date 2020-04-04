@@ -19,18 +19,19 @@ public class TestFreeTypeFontStore extends GdxFontStore {
 
     public static final TextStyle PIXEL_32 = textStyle("pixel", 32);
 
-    private final GdxFontGenerator generator = new GdxFontGenerator();
+    private final YDir ydir;
 
     public TestFreeTypeFontStore(YDir ydir) {
-        generator.setYDir(ydir);
+        this.ydir = ydir;
 
         try {
             register(SERIF_16);
             register(SERIF_32);
             register(SERIF_32_ITALIC);
 
+            GdxFontGenerator generator = new GdxFontGenerator();
             generator.disableAntiAlias();
-            register(PIXEL_32);
+            register(PIXEL_32, generator);
         } catch (IOException ioe) {
             Assert.fail("Unable to load font(s): " + ioe);
         }
@@ -41,10 +42,15 @@ public class TestFreeTypeFontStore extends GdxFontStore {
     }
 
     void register(TextStyle style) throws IOException {
+        register(style, new GdxFontGenerator());
+    }
+
+    private void register(TextStyle style, GdxFontGenerator generator) throws IOException {
         String fontName = style.getFontName();
         Assert.assertNotNull(fontName);
 
         String filename = "font/" + fontName + ".ttf";
+        generator.setYDir(ydir);
         registerFont(generator.load(filename, style));
     }
 
