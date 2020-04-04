@@ -20,8 +20,6 @@ import nl.weeaboo.gdx.test.junit.GdxUiTest;
 import nl.weeaboo.gdx.test.pixmap.PixmapEquality;
 import nl.weeaboo.gdx.test.pixmap.ScreenshotHelper;
 import nl.weeaboo.styledtext.StyledText;
-import nl.weeaboo.styledtext.gdx.GdxFontUtil;
-import nl.weeaboo.styledtext.gdx.YDir;
 import nl.weeaboo.styledtext.layout.ITextLayout;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
 import nl.weeaboo.styledtext.layout.LayoutUtil;
@@ -39,6 +37,7 @@ public class GdxRenderTest {
     protected TestFreeTypeFontStore fontStore;
 
     private final int pad = 4;
+    private float scale = 1f;
 
     private ShapeRenderer shapeRenderer;
     private PixmapEquality pixmapEquals;
@@ -86,6 +85,10 @@ public class GdxRenderTest {
         return LayoutUtil.layout(fontStore, text, params);
     }
 
+    protected void setScale(float s) {
+        scale = s;
+    }
+
     protected Rectangle renderText(ITextLayout layout, float visibleChars, LayoutParameters params) {
         float th = layout.getTextHeight();
         float tw = layout.getTextWidth();
@@ -94,7 +97,7 @@ public class GdxRenderTest {
         clearRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
         OrthographicCamera camera = new OrthographicCamera();
-        camera.setToOrtho(params.ydir > 0);
+        camera.setToOrtho(params.ydir > 0, Gdx.graphics.getWidth() / scale, Gdx.graphics.getHeight() / scale);
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();

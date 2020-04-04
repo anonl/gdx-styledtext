@@ -1,5 +1,6 @@
 package nl.weeaboo.styledtext.gdx;
 
+import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.PIXEL_32;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32_ITALIC;
 
@@ -18,7 +19,7 @@ public class TextRenderTest extends GdxRenderTest {
 
     @Before
     public void before() {
-        generate = true;
+        generate = false;
     }
 
     @Test
@@ -39,6 +40,22 @@ public class TextRenderTest extends GdxRenderTest {
     @Test
     public void unicode() {
         checkRenderResult("unicode", renderText(new StyledText(TestSentences.UNICODE_SYMBOLS, SERIF_32)));
+    }
+
+    @Test
+    public void antiAlias() {
+        checkRenderResult("anti-alias-100", renderText(new StyledText(TestSentences.ALPHANUMERIC, SERIF_32)));
+
+        setScale(.5f);
+        checkRenderResult("anti-alias-050", renderText(new StyledText(TestSentences.ALPHANUMERIC, SERIF_32)));
+    }
+
+    @Test
+    public void noAntiAlias() {
+        checkRenderResult("no-anti-alias-100", renderText(new StyledText(TestSentences.ALPHANUMERIC, PIXEL_32)));
+
+        setScale(.5f);
+        checkRenderResult("no-anti-alias-050", renderText(new StyledText(TestSentences.ALPHANUMERIC, PIXEL_32)));
     }
 
     @Test
