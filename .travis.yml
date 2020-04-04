@@ -1,8 +1,12 @@
 
+dist: trusty
 language: java
 
-jdk:
-  - oraclejdk8
+addons:
+  apt:
+    packages:
+      - openjdk-6-jdk
+jdk: openjdk6
 
 before_script:
   # Start virtual frame buffer, see: https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-GUI-(e.g.-a-Web-browser)
@@ -11,4 +15,7 @@ before_script:
   - sleep 3 # give xvfb some time to start
 
 script:
-  ./gradlew check -PuiTest --info
+  ./gradlew --info -PuiTest build jacocoTestReport
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
