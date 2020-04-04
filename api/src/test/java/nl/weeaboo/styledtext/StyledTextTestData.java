@@ -2,7 +2,7 @@ package nl.weeaboo.styledtext;
 
 public class StyledTextTestData {
 
-    public static final String FONT_NAME = "font-name";
+    public static final String FONT_NAME = "Font-Name";
     public static final EFontStyle FONT_STYLE = EFontStyle.BOLD_ITALIC;
     public static final float FONT_SIZE = 14f;
 

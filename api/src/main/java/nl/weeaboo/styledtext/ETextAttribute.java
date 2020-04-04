@@ -80,7 +80,7 @@ public enum ETextAttribute {
             }
             return val;
         } else if (this == FONT_NAME) {
-            return string.toLowerCase(Locale.ROOT);
+            return string;
         }
 
         // Enum types
@@ -124,7 +124,7 @@ public enum ETextAttribute {
         if (this == COLOR || this == OUTLINE_COLOR || this == SHADOW_COLOR) {
             return String.format(Locale.ROOT, "%08x", (Integer)val);
         } else if (this == FONT_NAME) {
-            return String.valueOf(val).toLowerCase(Locale.ROOT);
+            return String.valueOf(val);
         }
 
         return String.valueOf(val);

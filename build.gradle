@@ -6,7 +6,7 @@ plugins {
 allprojects {
     apply plugin: 'maven-publish'
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '2.1.0'
+    version = '2.2.0'
     
     repositories {
         jcenter()
@@ -51,9 +51,6 @@ subprojects {
     }
     
     test {
-        // jvmArgs '-Xcheck:jni'
-        // jvmArgs '-XX:OnError=cat hs_err_pid%p.log'
-        
         testLogging {
             info {
                 events 'skipped', 'passed', 'failed'
