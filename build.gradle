@@ -10,7 +10,7 @@ allprojects {
     
     repositories {
         jcenter()
-        maven { url "https://dl.bintray.com/anonl/gdx/" }
+        maven { url "https://dl.bintray.com/anonl/nvlist/" }
     }    
 }
 
@@ -130,7 +130,7 @@ bintray {
     key = System.getenv('BINTRAY_KEY')
     publications = ['api', 'impl']
     pkg {
-        repo = 'gdx-styledtext'
+        repo = 'nvlist'
         name = 'gdx-styledtext'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/anonl/gdx-styledtext.git'
