@@ -4,7 +4,6 @@ import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.PIXEL_32;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32_ITALIC;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -16,11 +15,6 @@ import nl.weeaboo.styledtext.layout.LayoutParameters;
 
 @RunWith(GdxLwjgl3TestRunner.class)
 public class TextRenderTest extends GdxRenderTest {
-
-    @Before
-    public void before() {
-        generate = false;
-    }
 
     @Test
     public void emptyString() {

@@ -24,8 +24,8 @@ public class GdxFontGeneratorTest {
     @Test
     public void setMinMagFilters() {
         FreeTypeFontParameter defaultFont = getParams();
-        Assert.assertEquals(TextureFilter.MipMapLinearLinear, defaultFont.minFilter);
-        Assert.assertEquals(true, defaultFont.genMipMaps);
+        Assert.assertEquals(TextureFilter.Linear, defaultFont.minFilter);
+        Assert.assertEquals(false, defaultFont.genMipMaps);
         Assert.assertEquals(TextureFilter.Linear, defaultFont.magFilter);
         Assert.assertEquals(false, defaultFont.mono);
 

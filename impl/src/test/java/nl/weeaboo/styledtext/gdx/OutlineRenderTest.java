@@ -25,8 +25,6 @@ public class OutlineRenderTest extends GdxRenderTest {
 
     @Before
     public void before() throws IOException, StyleParseException {
-        // this.generate = true;
-
         red = createOutlineStyle(0xFFFF0000, 2f);
         fontStore.register(red);
 
