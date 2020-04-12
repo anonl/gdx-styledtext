@@ -60,7 +60,7 @@ public class TestFreeTypeFontStore extends GdxFontStore {
     }
 
     public List<BitmapFont> getBitmapFonts() {
-        List<BitmapFont> result = new ArrayList<>();
+        List<BitmapFont> result = new ArrayList<BitmapFont>();
         for (GdxFontInfo fontInfo : getFonts()) {
             result.add(fontInfo.font);
         }

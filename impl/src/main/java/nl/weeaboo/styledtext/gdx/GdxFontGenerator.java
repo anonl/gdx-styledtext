@@ -17,9 +17,10 @@ public final class GdxFontGenerator {
 
     private YDir yDir = YDir.UP;
     private boolean incremental = true;
-    private TextureFilter minFilter = TextureFilter.MipMapLinearLinear;
+    private TextureFilter minFilter = TextureFilter.Linear;
     private TextureFilter magFilter = TextureFilter.Linear;
     private boolean monochrome = false;
+    private boolean renderSnapToGrid = true;
 
     public GdxFontGenerator() {
     }
@@ -45,6 +46,9 @@ public final class GdxFontGenerator {
         setMonochrome(true);
         setMinFilter(TextureFilter.Nearest);
         setMagFilter(TextureFilter.Nearest);
+
+        // If filtering is set to nearest, you really want to render only at integer positions
+        setRenderSnapToGrid(true);
     }
 
     /**
@@ -72,6 +76,18 @@ public final class GdxFontGenerator {
         this.magFilter = magFilter;
     }
 
+    /**
+     * If {@code true}, round coordinates to the nearest integer during rendering. This increases sharpness at
+     * the expense of slightly incorrect positioning.
+     * <p>
+     * Do note that this only rounds coordinates within the font rendering system. For this to work, the
+     * parent transform used for rendering must produce pixel-aligned results (no rotation, translation/scale
+     * must be integers).
+     */
+    public void setRenderSnapToGrid(boolean renderSnapToGrid) {
+        this.renderSnapToGrid = renderSnapToGrid;
+    }
+
     public GdxFontInfo load(String fontPath, TextStyle style) throws IOException {
         FileHandle fontFile = Gdx.files.internal(fontPath);
         return load(fontFile, style);
@@ -95,7 +111,7 @@ public final class GdxFontGenerator {
             FreeTypeFontParameter params = getParams(style, sizes[n]);
 
             BitmapFont bmFont = generator.generateFont(params);
-            bmFont.setUseIntegerPositions(true);
+            bmFont.setUseIntegerPositions(renderSnapToGrid);
 
             UnderlineMetrics underlineMetrics = GdxFontUtil.deriveUnderlineMetrics(generator, sizes[n]);
 
@@ -117,6 +133,8 @@ public final class GdxFontGenerator {
 
         params.flip = (yDir == YDir.DOWN);
         params.size = fontSize;
+
+        params.renderCount = 1;
 
         params.minFilter = minFilter;
         params.genMipMaps = minFilter.isMipMap();
