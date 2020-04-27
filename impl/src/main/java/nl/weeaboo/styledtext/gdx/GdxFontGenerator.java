@@ -17,6 +17,8 @@ public final class GdxFontGenerator {
 
     private YDir yDir = YDir.UP;
     private boolean incremental = true;
+    private int renderCount = 2;
+    private float gamma = 1f;
     private TextureFilter minFilter = TextureFilter.Linear;
     private TextureFilter magFilter = TextureFilter.Linear;
     private boolean monochrome = false;
@@ -88,6 +90,23 @@ public final class GdxFontGenerator {
         this.renderSnapToGrid = renderSnapToGrid;
     }
 
+    /**
+     * Adjusts gamma curve compensation of the rendered glyphs. This value can be used to tweak the strength
+     * of anti-aliasing applied to the rendered glyphs.
+     */
+    public void setGamma(float gamma) {
+        this.gamma = gamma;
+    }
+
+    /**
+     * Number of times to render the main glyph. Increase this number to reduce bleed-through of border/shadow colors.
+     *
+     * @see FreeTypeFontParameter#renderCount
+     */
+    public void setRenderCount(int renderCount) {
+        this.renderCount = renderCount;
+    }
+
     public GdxFontInfo load(String fontPath, TextStyle style) throws IOException {
         FileHandle fontFile = Gdx.files.internal(fontPath);
         return load(fontFile, style);
@@ -134,12 +153,13 @@ public final class GdxFontGenerator {
         params.flip = (yDir == YDir.DOWN);
         params.size = fontSize;
 
-        params.renderCount = 1;
+        params.renderCount = renderCount;
 
         params.minFilter = minFilter;
         params.genMipMaps = minFilter.isMipMap();
         params.magFilter = magFilter;
 
+        params.gamma = gamma;
         params.mono = monochrome;
 
         if (!GdxFontUtil.isColorizable(style)) {
