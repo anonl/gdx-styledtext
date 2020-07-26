@@ -1,5 +1,7 @@
 package nl.weeaboo.styledtext.gdx;
 
+import javax.annotation.Nullable;
+
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Disposable;
@@ -15,7 +17,7 @@ public final class GdxFont implements Disposable {
     private final UnderlineMetrics underlineMetrics;
 
     // Dedicated generator for this font (only used for incrementally generated fonts)
-    FreeTypeFontGenerator generator = null;
+    @Nullable FreeTypeFontGenerator generator = null;
 
     private boolean disposed;
 

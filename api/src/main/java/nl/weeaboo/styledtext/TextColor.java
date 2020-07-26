@@ -10,7 +10,7 @@ final class TextColor {
         int gi = Math.max(0, Math.min(255, Math.round(255 * g)));
         int bi = Math.max(0, Math.min(255, Math.round(255 * b)));
         int ai = Math.max(0, Math.min(255, Math.round(255 * a)));
-        return (ai << 24) | (ri << 16) | (gi << 8) | (bi);
+        return (ai << 24) | (ri << 16) | (gi << 8) | bi;
     }
 
     public static int packColorInt(int r, int g, int b, int a) {
@@ -18,7 +18,7 @@ final class TextColor {
         int gi = Math.max(0, Math.min(255, g));
         int bi = Math.max(0, Math.min(255, b));
         int ai = Math.max(0, Math.min(255, a));
-        return (ai << 24) | (ri << 16) | (gi << 8) | (bi);
+        return (ai << 24) | (ri << 16) | (gi << 8) | bi;
     }
 
     static boolean isTransparent(int argb) {

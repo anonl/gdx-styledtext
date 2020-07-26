@@ -81,7 +81,7 @@ public class TextStyleExtendTest {
         TextStyle.extend(out, base, ext);
 
         Assert.assertEquals(fullStyle, out[0]);
-        Assert.assertEquals(TextStyle.extend(fullStyle, ts), out[1]);
+        Assert.assertEquals(TextStyle.combine(fullStyle, ts), out[1]);
         Assert.assertEquals(ts, out[2]);
         /*
          * Test for optimization: extending the same base/ext pair twice in a row reuses the result of the

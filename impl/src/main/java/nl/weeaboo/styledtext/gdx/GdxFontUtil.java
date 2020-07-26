@@ -55,8 +55,8 @@ public final class GdxFontUtil {
             SizeMetrics sizeMetrics = face.getSize().getMetrics();
 
             int yScale = sizeMetrics.getYscale(); // 16.16 fixed point
-            float position = FreeType.toInt(face.getUnderlinePosition() * yScale >> 16);
-            float thickness = FreeType.toInt(face.getUnderlineThickness() * yScale >> 16);
+            float position = FreeType.toInt((face.getUnderlinePosition() * yScale) >> 16);
+            float thickness = FreeType.toInt((face.getUnderlineThickness() * yScale) >> 16);
             return new UnderlineMetrics(position, thickness);
         } catch (Exception e) {
             LOG.error("Error fetching FreeType underline metrics", e);

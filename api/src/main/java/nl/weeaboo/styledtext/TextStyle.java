@@ -1,5 +1,7 @@
 package nl.weeaboo.styledtext;
 
+import com.google.errorprone.annotations.CheckReturnValue;
+
 public final class TextStyle extends AbstractTextStyle {
 
     public static TextStyle BOLD = new TextStyle(ETextAttribute.FONT_STYLE, EFontStyle.BOLD);
@@ -52,7 +54,7 @@ public final class TextStyle extends AbstractTextStyle {
 
         TextStyle style = new TextStyle();
 
-        for (String part : string.split("\\|")) {
+        for (String part : string.split("\\|", -1)) {
             int index = part.indexOf('=');
             if (index < 0) {
                 throw new StyleParseException("Segment doesn't contain a key=value pair: " + part);
@@ -77,10 +79,11 @@ public final class TextStyle extends AbstractTextStyle {
     }
 
     public TextStyle extend(TextStyle ts) {
-        return extend(this, ts);
+        return combine(this, ts);
     }
 
-    public static TextStyle extend(TextStyle base, TextStyle ext) {
+    @CheckReturnValue
+    public static TextStyle combine(TextStyle base, TextStyle ext) {
         if (ext == null) {
             return base;
         } else if (base == null || base.equals(ext)) {
@@ -113,7 +116,7 @@ public final class TextStyle extends AbstractTextStyle {
                 // Optimization for when (base, ext) is the same as for the previous index
                 result = lastResult;
             } else {
-                result = TextStyle.extend(bs, es);
+                result = TextStyle.combine(bs, es);
 
                 lastBase = bs;
                 lastExt = es;

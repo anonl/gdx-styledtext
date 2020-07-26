@@ -74,7 +74,7 @@ public class GdxFontStore implements IFontRegistry {
             }
 
             // Check size
-            score -= SCORE_SIZE * Math.abs(GdxFontMetrics.getScale(paramStyle, info.getBitmapFont()) - 1f);
+            score -= (int)(SCORE_SIZE * Math.abs(GdxFontMetrics.getScale(paramStyle, info.getBitmapFont()) - 1f));
 
             // Check color (only if not colorizable)
             if (!GdxFontUtil.isColorizable(infoStyle) && paramStyle.getColor() != infoStyle.getColor()) {
@@ -87,8 +87,9 @@ public class GdxFontStore implements IFontRegistry {
                 if (paramStyle.getOutlineColor() != infoStyle.getOutlineColor()) {
                     score -= SCORE_OUTLINE;
                 } else {
-                    score -= SCORE_OUTLINE * getDecorationBadness(paramStyle.getOutlineSize(),
+                    float decorationBadness = getDecorationBadness(paramStyle.getOutlineSize(),
                             infoStyle.getOutlineSize(), nativePixelSize);
+                    score -= (int)(SCORE_OUTLINE * decorationBadness);
                 }
             }
 
@@ -101,7 +102,7 @@ public class GdxFontStore implements IFontRegistry {
                             nativePixelSize);
                     float badnessY = getDecorationBadness(paramStyle.getShadowDy(), infoStyle.getShadowDy(),
                             nativePixelSize);
-                    score -= SCORE_SHADOW * (badnessX + badnessY) / 2f;
+                    score -= (int)(SCORE_SHADOW * .5f * (badnessX + badnessY));
                 }
             }
 

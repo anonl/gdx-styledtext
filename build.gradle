@@ -15,7 +15,7 @@ allprojects {
     }
 }
 
-ext.errorProneVersion = '2.4.0'
+ext.errorProneVersion = '2.3.3'
 
 subprojects {
     apply plugin: 'java'
@@ -49,6 +49,11 @@ subprojects {
     }
     
     dependencies {
+        // ErrorProne annotations
+        compileOnly "com.google.errorprone:error_prone_annotations:${rootProject.ext.errorProneVersion}"
+        // JSR305 annotations (nullable, etc.)
+        compileOnly "com.google.code.findbugs:jsr305:3.0.1"
+
         testCompile "junit:junit:$junitVersion"
         testCompile "nl.weeaboo.gdx-test:gdx-test-core:$gdxTestVersion"
     }
