@@ -2,7 +2,7 @@ package nl.weeaboo.styledtext.layout;
 
 import nl.weeaboo.styledtext.TextStyle;
 
-public interface IFontStore {
+public interface IFontRegistry {
 
     /**
      * Finds most appropriate font data for the given text style.

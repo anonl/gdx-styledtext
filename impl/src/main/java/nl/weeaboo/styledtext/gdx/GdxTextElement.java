@@ -25,8 +25,7 @@ final class GdxTextElement extends TextElement {
     private static Texture blankTexture;
 
     private final TextStyle style;
-    private final BitmapFont font;
-    private final UnderlineMetrics underlineMetrics;
+    private final GdxFont font;
     private final float originalScaleX, originalScaleY;
     private final float scaleXY;
 
@@ -35,17 +34,15 @@ final class GdxTextElement extends TextElement {
     private int glyphCount;
     private boolean ydown;
 
-    public GdxTextElement(CharSequence str, TextStyle style, int bidiLevel, BitmapFont font, float scaleXY,
-            UnderlineMetrics underlineMetrics) {
-
+    public GdxTextElement(CharSequence str, TextStyle style, int bidiLevel, GdxFont font, float scaleXY) {
         super(style.getAlign(), bidiLevel);
 
         this.style = style;
         this.font = font;
-        this.underlineMetrics = underlineMetrics;
 
-        originalScaleX = font.getScaleX();
-        originalScaleY = font.getScaleY();
+        BitmapFont bitmapFont = font.getBitmapFont();
+        originalScaleX = bitmapFont.getScaleX();
+        originalScaleY = bitmapFont.getScaleY();
         this.scaleXY = scaleXY;
 
         initGlyphLayout(str, style);
@@ -57,6 +54,7 @@ final class GdxTextElement extends TextElement {
             color = GdxFontUtil.argb8888ToColor(style.getColor());
         }
 
+        BitmapFont bitmapFont = getBitmapFont();
         applyScale();
         {
             if (isRightToLeft()) {
@@ -65,16 +63,16 @@ final class GdxTextElement extends TextElement {
                 str = mirrorGlyphs(sb);
             }
 
-            glyphLayout = new GlyphLayout(font, str, color, 0, Align.left, false);
+            glyphLayout = new GlyphLayout(bitmapFont, str, color, 0, Align.left, false);
             if (glyphLayout.runs.size > 1) {
                 throw new IllegalArgumentException(
                         "Arguments result in a layout with multiple glyph runs: " + glyphLayout.runs.size);
             }
-            ascent = font.getCapHeight() + font.getAscent();
+            ascent = bitmapFont.getCapHeight() + bitmapFont.getAscent();
 
             glyphCount = getGlyphCount(glyphLayout);
             setLayoutWidth(glyphLayout.width);
-            setLayoutHeight(font.getLineHeight());
+            setLayoutHeight(bitmapFont.getLineHeight());
         }
         resetScale();
     }
@@ -137,8 +135,9 @@ final class GdxTextElement extends TextElement {
     }
 
     private void drawLayout(Batch batch, GlyphLayout glyphLayout, float dx, float dy) {
-        dy -= font.getAscent();
-        font.draw(batch, glyphLayout, getX() + dx, getY() + dy);
+        BitmapFont bitmapFont = getBitmapFont();
+        dy -= bitmapFont.getAscent();
+        bitmapFont.draw(batch, glyphLayout, getX() + dx, getY() + dy);
     }
 
     private void drawUnderline(Batch batch, GlyphLayout glyphLayout, float dx, float dy) {
@@ -147,13 +146,15 @@ final class GdxTextElement extends TextElement {
             return;
         }
 
+        BitmapFont bitmapFont = font.getBitmapFont();
+        UnderlineMetrics underlineMetrics = font.getUnderlineMetrics();
         float thickness = underlineMetrics.getUnderlineThickness();
 
-        float underlineDy = underlineMetrics.getUnderlinePosition() - font.getCapHeight();
+        float underlineDy = underlineMetrics.getUnderlinePosition() - bitmapFont.getCapHeight();
         if (ydown) {
             underlineDy = -underlineDy;
         }
-        underlineDy -= font.getAscent();
+        underlineDy -= bitmapFont.getAscent();
 
         float x = getX() + dx;
         float y = getY() + dy + underlineDy - thickness / 2;
@@ -189,11 +190,11 @@ final class GdxTextElement extends TextElement {
     }
 
     private void applyScale() {
-        font.getData().setScale(scaleXY);
+        font.getBitmapFont().getData().setScale(scaleXY);
     }
 
     private void resetScale() {
-        font.getData().setScale(originalScaleX, originalScaleY);
+        font.getBitmapFont().getData().setScale(originalScaleX, originalScaleY);
     }
 
     @Override
@@ -249,6 +250,10 @@ final class GdxTextElement extends TextElement {
     @Override
     public float getAscent() {
         return ascent;
+    }
+
+    private BitmapFont getBitmapFont() {
+        return font.getBitmapFont();
     }
 
     @Override

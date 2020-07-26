@@ -51,7 +51,7 @@ public class TestFreeTypeFontStore extends GdxFontStore {
 
         String filename = "font/" + fontName + ".ttf";
         generator.setYDir(ydir);
-        registerFont(generator.load(filename, style));
+        addFont(generator.load(filename, style));
     }
 
     @Override
@@ -61,8 +61,8 @@ public class TestFreeTypeFontStore extends GdxFontStore {
 
     public List<BitmapFont> getBitmapFonts() {
         List<BitmapFont> result = new ArrayList<BitmapFont>();
-        for (GdxFontInfo fontInfo : getFonts()) {
-            result.add(fontInfo.font);
+        for (GdxFont fontInfo : getFonts()) {
+            result.add(fontInfo.getBitmapFont());
         }
         return result;
     }

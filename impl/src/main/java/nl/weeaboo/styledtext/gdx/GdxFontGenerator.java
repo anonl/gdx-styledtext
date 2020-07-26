@@ -107,22 +107,22 @@ public final class GdxFontGenerator {
         this.renderCount = renderCount;
     }
 
-    public GdxFontInfo load(String fontPath, TextStyle style) throws IOException {
+    public GdxFont load(String fontPath, TextStyle style) throws IOException {
         FileHandle fontFile = Gdx.files.internal(fontPath);
         return load(fontFile, style);
     }
 
-    public GdxFontInfo load(FileHandle fontFile, TextStyle style) throws IOException {
+    public GdxFont load(FileHandle fontFile, TextStyle style) throws IOException {
         int pixelSize = Math.round(style.getFontSize());
         return load(fontFile, style, new int[] { pixelSize })[0];
     }
 
-    public GdxFontInfo[] load(FileHandle fontFile, TextStyle style, int[] sizes) throws IOException {
+    public GdxFont[] load(FileHandle fontFile, TextStyle style, int[] sizes) throws IOException {
         if (!fontFile.exists()) {
             throw new FileNotFoundException(fontFile.toString());
         }
 
-        GdxFontInfo[] result = new GdxFontInfo[sizes.length];
+        GdxFont[] result = new GdxFont[sizes.length];
 
         for (int n = 0; n < sizes.length; n++) {
             FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
@@ -134,13 +134,13 @@ public final class GdxFontGenerator {
 
             UnderlineMetrics underlineMetrics = GdxFontUtil.deriveUnderlineMetrics(generator, sizes[n]);
 
-            GdxFontInfo fontInfo = new GdxFontInfo(style, bmFont, sizes[n], underlineMetrics);
+            GdxFont font = new GdxFont(style, bmFont, sizes[n], underlineMetrics);
             if (incremental) {
-                fontInfo.generator = generator;
+                font.generator = generator;
             } else {
                 generator.dispose();
             }
-            result[n] = fontInfo;
+            result[n] = font;
         }
 
         return result;

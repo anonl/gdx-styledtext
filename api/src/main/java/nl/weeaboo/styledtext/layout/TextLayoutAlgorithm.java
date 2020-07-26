@@ -11,13 +11,13 @@ import nl.weeaboo.styledtext.layout.RunSplitter.RunState;
 
 final class TextLayoutAlgorithm implements RunHandler {
 
-    private final IFontStore fontStore;
+    private final IFontRegistry fontStore;
 
     private LayoutParameters params;
     private final List<LineLayout> finishedLines = new ArrayList<LineLayout>();
     private LineLayout currentLine;
 
-    public TextLayoutAlgorithm(IFontStore fontStore) {
+    public TextLayoutAlgorithm(IFontRegistry fontStore) {
         this.fontStore = fontStore;
     }
 
