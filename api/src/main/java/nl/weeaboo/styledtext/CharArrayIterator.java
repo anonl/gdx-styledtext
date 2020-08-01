@@ -17,7 +17,7 @@ final class CharArrayIterator implements CharacterIterator {
      * @param chars The characters to iterate over. This array is not copied, so any changes in the array are
      *        immediately reflected by this character iterator.
      */
-    public CharArrayIterator(char[] chars, int off, int len) {
+    CharArrayIterator(char[] chars, int off, int len) {
         if (chars == null) {
             throw new NullPointerException("chars may not be null");
         }

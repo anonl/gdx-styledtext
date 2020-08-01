@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import nl.weeaboo.styledtext.EFontStyle;
 import nl.weeaboo.styledtext.TextStyle;
 
-public class TestFreeTypeFontStore extends GdxFontStore {
+public class TestFreeTypeFontStore extends GdxFontRegistry {
 
     public static final TextStyle SERIF_16 = textStyle("RobotoSlab", 16);
     public static final TextStyle SERIF_32 = textStyle("RobotoSlab", 32);

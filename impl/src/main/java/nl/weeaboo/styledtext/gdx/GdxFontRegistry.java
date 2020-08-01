@@ -1,15 +1,18 @@
 package nl.weeaboo.styledtext.gdx;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.annotation.Nullable;
 
 import nl.weeaboo.styledtext.EFontStyle;
 import nl.weeaboo.styledtext.TextStyle;
 import nl.weeaboo.styledtext.layout.IFontMetrics;
 import nl.weeaboo.styledtext.layout.IFontRegistry;
 
-public class GdxFontStore implements IFontRegistry {
+public class GdxFontRegistry implements IFontRegistry {
 
     private static final int SCORE_NAME     = 10000000;
     private static final int SCORE_STYLE    = 1000000;
@@ -38,7 +41,7 @@ public class GdxFontStore implements IFontRegistry {
 
     @Override
     public IFontMetrics getFontMetrics(TextStyle style) {
-        GdxFont bestMatch = findFont(style);
+        GdxFont bestMatch = findFont(fonts, style);
         if (bestMatch == null) {
             return null;
         }
@@ -50,11 +53,11 @@ public class GdxFontStore implements IFontRegistry {
         return Collections.unmodifiableList(fonts);
     }
 
-    private GdxFont findFont(TextStyle paramStyle) {
+    public static @Nullable GdxFont findFont(Collection<GdxFont> availableFonts, TextStyle paramStyle) {
         int bestScore = Integer.MIN_VALUE;
         GdxFont bestInfo = null;
 
-        for (GdxFont info : fonts) {
+        for (GdxFont info : availableFonts) {
             int score = 0;
 
             TextStyle infoStyle = info.getStyle();
@@ -119,7 +122,7 @@ public class GdxFontStore implements IFontRegistry {
      * Calculates a mismatch fraction between two outline/shadow sizes
      * @return The degree to which the two values mismatch (between 0.0 and 1.0).
      */
-    private float getDecorationBadness(float a, float b, int nativePixelSize) {
+    private static float getDecorationBadness(float a, float b, int nativePixelSize) {
         float badness = Math.abs(a - b);
         badness = .1f * badness / nativePixelSize;
         return Math.max(0, Math.min(1, badness));

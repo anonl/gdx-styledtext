@@ -44,6 +44,12 @@ public final class GdxFont implements Disposable {
         return disposed;
     }
 
+    private void checkNotDisposed() {
+        if (disposed) {
+            throw new IllegalStateException("Font is disposed: " + this);
+        }
+    }
+
     /** @return The amount of additional scaling required to reach the desired size */
     public float getScaleFor(TextStyle style) {
         return style.getFontSize() / nativePixelSize;
@@ -54,6 +60,8 @@ public final class GdxFont implements Disposable {
     }
 
     BitmapFont getBitmapFont() {
+        checkNotDisposed();
+
         return bitmapFont;
     }
 
@@ -63,6 +71,11 @@ public final class GdxFont implements Disposable {
 
     public int getNativePixelSize() {
         return nativePixelSize;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("GdxFont[style=%s]", style);
     }
 
 }

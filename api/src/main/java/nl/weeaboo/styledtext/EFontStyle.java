@@ -1,5 +1,7 @@
 package nl.weeaboo.styledtext;
 
+import javax.annotation.Nullable;
+
 public enum EFontStyle {
 
     PLAIN("plain"),
@@ -45,7 +47,7 @@ public enum EFontStyle {
      * @param a First style, may be {@code null}.
      * @param b Second style, may be {@code null}.
      */
-    public static EFontStyle combine(EFontStyle a, EFontStyle b) {
+    public static EFontStyle combine(@Nullable EFontStyle a, @Nullable EFontStyle b) {
         if (a == null) return b;
         if (b == null) return a;
 

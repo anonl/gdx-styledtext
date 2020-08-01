@@ -1,5 +1,7 @@
 package nl.weeaboo.styledtext;
 
+import javax.annotation.Nullable;
+
 public enum ETextAlign {
 
     /** Default text alignment */
@@ -32,7 +34,7 @@ public enum ETextAlign {
      * @return The enum value matching the given string representation, or {@code null} if no match is found.
      *         The matching algorithm is case-sensitive.
      */
-    public static ETextAlign fromString(String str) {
+    public static @Nullable ETextAlign fromString(String str) {
         for (ETextAlign a : values()) {
             if (a.toString().equals(str)) {
                 return a;

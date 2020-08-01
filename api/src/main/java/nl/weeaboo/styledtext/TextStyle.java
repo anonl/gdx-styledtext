@@ -1,5 +1,7 @@
 package nl.weeaboo.styledtext;
 
+import javax.annotation.Nullable;
+
 import com.google.errorprone.annotations.CheckReturnValue;
 
 public final class TextStyle extends AbstractTextStyle {
@@ -83,7 +85,7 @@ public final class TextStyle extends AbstractTextStyle {
     }
 
     @CheckReturnValue
-    public static TextStyle combine(TextStyle base, TextStyle ext) {
+    public static @Nullable TextStyle combine(@Nullable TextStyle base, @Nullable TextStyle ext) {
         if (ext == null) {
             return base;
         } else if (base == null || base.equals(ext)) {
