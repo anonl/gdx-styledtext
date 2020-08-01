@@ -1,0 +1,17 @@
+
+// Apply ErrorProne plugin
+apply plugin: 'net.ltgt.errorprone'
+
+dependencies {
+    errorprone "com.google.errorprone:error_prone_core:$errorProneVersion"
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [
+        '-Werror',
+
+        // To many false positives because we can't use Object.equals() yet (required Java 8)
+        '-Xep:ReferenceEquality:OFF',
+    ]
+}
+

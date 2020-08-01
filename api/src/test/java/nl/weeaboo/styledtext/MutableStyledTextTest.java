@@ -48,9 +48,9 @@ public class MutableStyledTextTest {
         mst.extendStyle(newStyle);
 
         // Check that the style at every index has indeed been extended
-        Assert.assertEquals(TextStyle.extend(null, newStyle), mst.getStyle(0));
+        Assert.assertEquals(TextStyle.combine(null, newStyle), mst.getStyle(0));
         for (int n = 1; n < mst.length(); n++) {
-            Assert.assertEquals(TextStyle.extend(fullStyle, newStyle), mst.getStyle(n));
+            Assert.assertEquals(TextStyle.combine(fullStyle, newStyle), mst.getStyle(n));
         }
     }
 
@@ -66,9 +66,9 @@ public class MutableStyledTextTest {
         mst.setBaseStyle(fullStyle);
 
         // Check that the style at every index has indeed been extended
-        Assert.assertEquals(TextStyle.extend(fullStyle, null), mst.getStyle(0));
+        Assert.assertEquals(TextStyle.combine(fullStyle, null), mst.getStyle(0));
         for (int n = 1; n < mst.length(); n++) {
-            Assert.assertEquals(TextStyle.extend(fullStyle, newStyle), mst.getStyle(n));
+            Assert.assertEquals(TextStyle.combine(fullStyle, newStyle), mst.getStyle(n));
         }
     }
 

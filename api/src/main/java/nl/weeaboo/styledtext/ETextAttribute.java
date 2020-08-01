@@ -3,6 +3,8 @@ package nl.weeaboo.styledtext;
 import java.io.Serializable;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 public enum ETextAttribute {
 
     FONT_NAME("fontName", String.class),
@@ -38,7 +40,7 @@ public enum ETextAttribute {
      * @return The enum value matching the given string representation, or {@code null} if no match is found.
      *         The matching algorithm is case-sensitive.
      */
-    public static ETextAttribute fromId(String str) {
+    public static @Nullable ETextAttribute fromId(String str) {
         for (ETextAttribute a : values()) {
             if (a.getId().equals(str)) {
                 return a;
@@ -47,11 +49,11 @@ public enum ETextAttribute {
         return null;
     }
 
-    boolean isValidValue(Object val) {
+    boolean isValidValue(@Nullable Object val) {
         return val == null || type.isAssignableFrom(val.getClass());
     }
 
-    Object extendValue(Object base, Object ext) {
+    @Nullable Object extendValue(@Nullable Object base, @Nullable Object ext) {
         if (base == null) {
             return ext;
         } else if (ext == null) {
@@ -67,7 +69,7 @@ public enum ETextAttribute {
         return ext;
     }
 
-    public Object valueFromString(String string) {
+    public @Nullable Object valueFromString(@Nullable String string) {
         if (string == null) {
             return null;
         }
@@ -116,7 +118,7 @@ public enum ETextAttribute {
         return null;
     }
 
-    String valueToString(Object val) {
+    @Nullable String valueToString(@Nullable Object val) {
         if (val == null) {
             return null;
         }

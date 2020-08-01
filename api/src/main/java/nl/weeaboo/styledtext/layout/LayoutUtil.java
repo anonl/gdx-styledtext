@@ -50,7 +50,7 @@ public final class LayoutUtil {
         return false;
     }
 
-    public static ITextLayout layout(IFontStore fontStore, StyledText stext, LayoutParameters params) {
+    public static ITextLayout layout(IFontRegistry fontStore, StyledText stext, LayoutParameters params) {
         TextLayoutAlgorithm algo = new TextLayoutAlgorithm(fontStore);
         return algo.layout(stext, params);
     }

@@ -1,18 +1,21 @@
 
 plugins {
     id 'com.jfrog.bintray' version '1.7.3'
+    id 'net.ltgt.errorprone' version '0.0.16'
 }
 
 allprojects {
     apply plugin: 'maven-publish'
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '3.2.0'
-    
+    version = '4.0.0'
+
     repositories {
         jcenter()
         maven { url "https://dl.bintray.com/anonl/nvlist/" }
-    }    
+    }
 }
+
+ext.errorProneVersion = '2.3.3'
 
 subprojects {
     apply plugin: 'java'
@@ -46,6 +49,11 @@ subprojects {
     }
     
     dependencies {
+        // ErrorProne annotations
+        compileOnly "com.google.errorprone:error_prone_annotations:${rootProject.ext.errorProneVersion}"
+        // JSR305 annotations (nullable, etc.)
+        compileOnly "com.google.code.findbugs:jsr305:3.0.1"
+
         testCompile "junit:junit:$junitVersion"
         testCompile "nl.weeaboo.gdx-test:gdx-test-core:$gdxTestVersion"
     }
@@ -78,6 +86,11 @@ subprojects {
             xml.enabled true
         }
     }
+
+    // ErrorProne compiler isn't compatible with Java 6, so check that the current JVM uses at least Java 7
+    if (JavaVersion.current().isJava7Compatible()) {
+        apply from: rootProject.file('errorprone.gradle')
+    }
 }
 
 project(":styledtext-api") {    
@@ -86,8 +99,8 @@ project(":styledtext-api") {
 project(":styledtext-impl") {
     dependencies {
         compile project(':styledtext-api')
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"        
-        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"        
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
         testCompile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         testRuntime "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"

@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import nl.weeaboo.styledtext.EFontStyle;
 import nl.weeaboo.styledtext.TextStyle;
 
-public class TestFreeTypeFontStore extends GdxFontStore {
+public class TestFreeTypeFontStore extends GdxFontRegistry {
 
     public static final TextStyle SERIF_16 = textStyle("RobotoSlab", 16);
     public static final TextStyle SERIF_32 = textStyle("RobotoSlab", 32);
@@ -51,7 +51,7 @@ public class TestFreeTypeFontStore extends GdxFontStore {
 
         String filename = "font/" + fontName + ".ttf";
         generator.setYDir(ydir);
-        registerFont(generator.load(filename, style));
+        addFont(generator.load(filename, style));
     }
 
     @Override
@@ -61,8 +61,8 @@ public class TestFreeTypeFontStore extends GdxFontStore {
 
     public List<BitmapFont> getBitmapFonts() {
         List<BitmapFont> result = new ArrayList<BitmapFont>();
-        for (GdxFontInfo fontInfo : getFonts()) {
-            result.add(fontInfo.font);
+        for (GdxFont fontInfo : getFonts()) {
+            result.add(fontInfo.getBitmapFont());
         }
         return result;
     }
