@@ -7,7 +7,7 @@ plugins {
 allprojects {
     apply plugin: 'maven-publish'
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '4.0.0'
+    version = '4.0.1'
 
     repositories {
         jcenter()
@@ -29,6 +29,7 @@ subprojects {
         gdxVersion = '1.9.6'
         junitVersion = '4.12'
         gdxTestVersion = '2.0.1'
+        guavaVersion = '20.0';
 
         pomLicenseConfig = {
            licenses {
@@ -56,6 +57,7 @@ subprojects {
 
         testCompile "junit:junit:$junitVersion"
         testCompile "nl.weeaboo.gdx-test:gdx-test-core:$gdxTestVersion"
+        testCompile "com.google.guava:guava-testlib:$guavaVersion"
     }
     
     test {

@@ -28,16 +28,18 @@ public final class GdxFont implements Disposable {
         this.bitmapFont = bitmapFont;
         this.nativePixelSize = nativePixelSize;
         this.underlineMetrics = underlineMetrics;
+
+        GdxCleaner.get().register(this, bitmapFont);
     }
 
+    /**
+     * Calling the dispose method is optional for {@link GdxFont}. Native resources will be disposed
+     * automatically when this font object is garbage-collected.
+     */
     @Override
     public void dispose() {
+        disposed = true;
         bitmapFont.dispose();
-
-        if (generator != null) {
-            generator.dispose();
-            generator = null;
-        }
     }
 
     public boolean isDisposed() {

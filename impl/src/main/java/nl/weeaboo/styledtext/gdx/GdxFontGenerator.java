@@ -137,6 +137,7 @@ public final class GdxFontGenerator {
             GdxFont font = new GdxFont(style, bmFont, sizes[n], underlineMetrics);
             if (incremental) {
                 font.generator = generator;
+                GdxCleaner.get().register(font, generator);
             } else {
                 generator.dispose();
             }
