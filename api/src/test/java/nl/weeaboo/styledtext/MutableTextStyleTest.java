@@ -97,11 +97,11 @@ public class MutableTextStyleTest {
         Assert.assertTrue(mts.hasAttribute(ETextAttribute.FONT_NAME));
         Assert.assertEquals("test", mts.getAttribute(ETextAttribute.FONT_NAME, "ERROR"));
         Assert.assertTrue(mts.hasAttribute(ETextAttribute.COLOR));
-        TextColorTestUtil.assertColor(0xFF804020, (Integer)mts.getAttribute(ETextAttribute.COLOR, 0));
+        TextColorTestUtil.assertColor(0xFF804020, mts.getAttribute(ETextAttribute.COLOR, 0));
 
         mts.removeAttribute(ETextAttribute.COLOR);
         Assert.assertFalse(mts.hasAttribute(ETextAttribute.COLOR));
-        TextColorTestUtil.assertColor(0, (Integer)mts.getAttribute(ETextAttribute.COLOR, 0));
+        TextColorTestUtil.assertColor(0, mts.getAttribute(ETextAttribute.COLOR, 0));
     }
 
     /** Check the default value for each attribute */

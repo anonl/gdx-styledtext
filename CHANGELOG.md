@@ -1,4 +1,7 @@
 
+# v4.1.0
+- Added additional overloads of `AbstractTextStyle.getAttribute()` to reduce boxing conversions between e.g. `float`/`Float`.
+
 # v4.0.1
 - `GdxFont` now disposes its native resources automatically when garbage collected.
 

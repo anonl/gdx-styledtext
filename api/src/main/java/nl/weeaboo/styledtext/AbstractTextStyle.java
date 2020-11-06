@@ -79,6 +79,21 @@ abstract class AbstractTextStyle implements Serializable {
         return (val != null ? val : defaultValue);
     }
 
+    public boolean getAttribute(ETextAttribute attr, boolean defaultValue) {
+        Object val = attributes.get(attr);
+        return (val != null ? (Boolean)val : defaultValue);
+    }
+
+    public int getAttribute(ETextAttribute attr, int defaultValue) {
+        Object val = attributes.get(attr);
+        return (val != null ? (Integer)val : defaultValue);
+    }
+
+    public float getAttribute(ETextAttribute attr, float defaultValue) {
+        Object val = attributes.get(attr);
+        return (val != null ? (Float)val : defaultValue);
+    }
+
     public String getFontName() {
         return getFontName(null);
     }
@@ -97,7 +112,7 @@ abstract class AbstractTextStyle implements Serializable {
         return getFontSize(12f);
     }
     public float getFontSize(float fallback) {
-        return (Float)getAttribute(ETextAttribute.FONT_SIZE, fallback);
+        return getAttribute(ETextAttribute.FONT_SIZE, fallback);
     }
 
     public ETextAlign getAlign() {
@@ -117,56 +132,56 @@ abstract class AbstractTextStyle implements Serializable {
      * @return The text color packed into an int ({@code AARRGGBB})
      */
     public int getColor(int fallback) {
-        return (Integer)getAttribute(ETextAttribute.COLOR, fallback);
+        return getAttribute(ETextAttribute.COLOR, fallback);
     }
 
     public boolean isUnderlined() {
         return isUnderlined(false);
     }
     public boolean isUnderlined(boolean fallback) {
-        return (Boolean)getAttribute(ETextAttribute.UNDERLINE, fallback);
+        return getAttribute(ETextAttribute.UNDERLINE, fallback);
     }
 
     public float getOutlineSize() {
         return getOutlineSize(0f);
     }
     public float getOutlineSize(float fallback) {
-        return (Float)getAttribute(ETextAttribute.OUTLINE_SIZE, fallback);
+        return getAttribute(ETextAttribute.OUTLINE_SIZE, fallback);
     }
 
     public int getOutlineColor() {
         return getOutlineColor(0);
     }
     public int getOutlineColor(int fallback) {
-        return (Integer)getAttribute(ETextAttribute.OUTLINE_COLOR, fallback);
+        return getAttribute(ETextAttribute.OUTLINE_COLOR, fallback);
     }
 
     public int getShadowColor() {
         return getShadowColor(0);
     }
     public int getShadowColor(int fallback) {
-        return (Integer)getAttribute(ETextAttribute.SHADOW_COLOR, fallback);
+        return getAttribute(ETextAttribute.SHADOW_COLOR, fallback);
     }
 
     public float getShadowDx() {
         return getShadowDx(0f);
     }
     public float getShadowDx(float fallback) {
-        return (Float)getAttribute(ETextAttribute.SHADOW_DX, fallback);
+        return getAttribute(ETextAttribute.SHADOW_DX, fallback);
     }
 
     public float getShadowDy() {
         return getShadowDy(0f);
     }
     public float getShadowDy(float fallback) {
-        return (Float)getAttribute(ETextAttribute.SHADOW_DY, fallback);
+        return getAttribute(ETextAttribute.SHADOW_DY, fallback);
     }
 
     public float getSpeed() {
         return getSpeed(1f);
     }
     public float getSpeed(float fallback) {
-        return (Float)getAttribute(ETextAttribute.SPEED, fallback);
+        return getAttribute(ETextAttribute.SPEED, fallback);
     }
 
     public boolean hasOutline() {
