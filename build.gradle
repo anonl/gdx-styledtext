@@ -1,17 +1,14 @@
 
 plugins {
-    id 'com.jfrog.bintray' version '1.7.3'
     id 'net.ltgt.errorprone' version '0.0.16'
 }
 
 allprojects {
-    apply plugin: 'maven-publish'
     group = 'nl.weeaboo.gdx-styledtext'
     version = '4.1.0'
 
     repositories {
-        jcenter()
-        maven { url "https://dl.bintray.com/anonl/nvlist/" }
+        mavenCentral()
     }
 }
 
@@ -28,19 +25,8 @@ subprojects {
 
         gdxVersion = '1.9.6'
         junitVersion = '4.12'
-        gdxTestVersion = '2.0.1'
+        gdxTestVersion = '2.0.2'
         guavaVersion = '20.0';
-
-        pomLicenseConfig = {
-           licenses {
-                license {
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    distribution 'repo'
-                }
-            }
-        }
-        pomLicenseConfig.resolveStrategy = Closure.DELEGATE_ONLY // Otherwise 'license' elem is missing
     }
     
     sourceCompatibility = javaVersion
@@ -78,11 +64,6 @@ subprojects {
         }        
     }
     
-    task sourceJar(type: Jar) {
-        from sourceSets.main.allJava
-        classifier "sources"
-    }
-    
     jacocoTestReport {
         reports {
             xml.enabled true
@@ -95,7 +76,8 @@ subprojects {
     }
 }
 
-project(":styledtext-api") {    
+project(":styledtext-api") {
+    project.apply from: rootProject.file('publish.gradle')
 }
 
 project(":styledtext-impl") {
@@ -108,46 +90,6 @@ project(":styledtext-impl") {
         testRuntime "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         testRuntime "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     }
-}
-
-publishing {
-    publications {
-        api(MavenPublication) {
-            artifactId = 'styledtext-api'
-
-            def proj = project(":styledtext-api")
-            from proj.components.java            
-            artifact(proj.sourceJar)            
-
-            pom.withXml {
-                asNode().children().last() + proj.ext.pomLicenseConfig
-            }  
-        }
-        impl(MavenPublication) {
-            artifactId = 'styledtext-impl'
-
-            def proj = project(":styledtext-impl")
-            from proj.components.java            
-            artifact(proj.sourceJar)            
-
-            pom.withXml {
-                asNode().children().last() + proj.ext.pomLicenseConfig
-            }  
-        }
-    }
-}
-
-bintray {    
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['api', 'impl']
-    pkg {
-        repo = 'nvlist'
-        name = 'gdx-styledtext'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/anonl/gdx-styledtext.git'
-        version {
-            name = project.version
-        }
-    }
+    
+    project.apply from: rootProject.file('publish.gradle')
 }
