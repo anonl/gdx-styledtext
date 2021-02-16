@@ -47,13 +47,14 @@ subprojects {
     }
     
     test {
+        // Change temp dir (default doesn't work in GitHub actions when running on Windows)
+        systemProperty 'java.io.tmpdir', file("$buildDir/tmp")
+
         testLogging {
-            info {
-                events 'skipped', 'passed', 'failed'
-                showStandardStreams true
-            }
+            // showStandardStreams true
+            exceptionFormat = 'full'
         }
-        
+
         def uiTest = project.hasProperty('uiTest')
         inputs.property('uiTest', uiTest) // Re-execute task if uiTest property changes        
         useJUnit {
@@ -61,9 +62,9 @@ subprojects {
                 // Exclude UI tests by default
                 excludeCategories 'nl.weeaboo.gdx.test.junit.GdxUiTest'
             }
-        }        
+        }
     }
-    
+
     jacocoTestReport {
         reports {
             xml.enabled true
