@@ -3,6 +3,7 @@ package nl.weeaboo.styledtext.gdx;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_16;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,11 @@ public class FreetypeFontMetricsTest {
     @Before
     public void before() {
         fontStore = new TestFreeTypeFontStore(YDir.DOWN);
+    }
+
+    @After
+    public void after() {
+        fontStore.dispose();
     }
 
     /** Check that the generated bitmap fonts match expectations */

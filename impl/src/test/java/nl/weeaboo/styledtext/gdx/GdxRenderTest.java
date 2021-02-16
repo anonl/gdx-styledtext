@@ -58,6 +58,7 @@ public class GdxRenderTest {
 
     @After
     public final void afterRenderTest() {
+        fontStore.dispose();
         batch.dispose();
         shapeRenderer.dispose();
     }

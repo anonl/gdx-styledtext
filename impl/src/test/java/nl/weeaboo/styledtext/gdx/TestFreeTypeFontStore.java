@@ -37,6 +37,11 @@ public class TestFreeTypeFontStore extends GdxFontRegistry {
         }
     }
 
+    public void dispose() {
+        removeAllFonts();
+        GdxCleaner.get().cleanUp();
+    }
+
     private static TextStyle textStyle(String fontName, int size) {
         return new TextStyle(fontName, size);
     }

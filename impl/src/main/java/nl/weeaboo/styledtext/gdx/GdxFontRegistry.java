@@ -39,6 +39,20 @@ public class GdxFontRegistry implements IFontRegistry {
         fonts.remove(font);
     }
 
+    /**
+     * Removes all fonts from this registry.
+     * <p>
+     * <strong>Note: This doesn't dispose the font</strong>
+     *
+     * @see #removeFont(GdxFont)
+     */
+    public void removeAllFonts() {
+        // Note: fonts is a CopyOnWriteArrayList, so this won't cause a ConcurrentModificationException
+        for (GdxFont font : fonts) {
+            removeFont(font);
+        }
+    }
+
     @Override
     public IFontMetrics getFontMetrics(TextStyle style) {
         GdxFont bestMatch = findFont(fonts, style);
