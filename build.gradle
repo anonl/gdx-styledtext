@@ -5,7 +5,7 @@ plugins {
 
 allprojects {
     group = 'nl.weeaboo.gdx-styledtext'
-    version = '4.1.0'
+    version = '5.0.0'
 
     repositories {
         mavenCentral()
@@ -21,16 +21,15 @@ subprojects {
     apply plugin: 'idea'
 
     ext {
-        javaVersion = JavaVersion.VERSION_1_6
-
-        gdxVersion = '1.9.6'
+        gdxVersion = '1.9.14'
         junitVersion = '4.12'
         gdxTestVersion = '2.0.2'
         guavaVersion = '20.0';
     }
-    
-    sourceCompatibility = javaVersion
-    
+
+    sourceCompatibility = JavaVersion.VERSION_1_6
+    targetCompatibility = JavaVersion.VERSION_1_7
+
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
@@ -41,9 +40,12 @@ subprojects {
         // JSR305 annotations (nullable, etc.)
         compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 
+        testCompile "com.google.guava:guava-testlib:$guavaVersion"
         testCompile "junit:junit:$junitVersion"
         testCompile "nl.weeaboo.gdx-test:gdx-test-core:$gdxTestVersion"
-        testCompile "com.google.guava:guava-testlib:$guavaVersion"
+        testCompile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        testRuntime "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testRuntime "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     }
     
     test {
@@ -86,11 +88,7 @@ project(":styledtext-impl") {
         compile project(':styledtext-api')
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-
-        testCompile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-        testRuntime "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        testRuntime "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     }
-    
+
     project.apply from: rootProject.file('publish.gradle')
 }

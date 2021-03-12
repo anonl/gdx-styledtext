@@ -61,6 +61,9 @@ public class GdxRenderTest {
         fontStore.dispose();
         batch.dispose();
         shapeRenderer.dispose();
+
+        System.gc();
+        GdxCleaner.get().cleanUp();
     }
 
     protected void checkRenderResult(String filename, Rectangle r) {

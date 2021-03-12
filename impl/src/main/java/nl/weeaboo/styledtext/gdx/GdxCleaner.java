@@ -5,20 +5,30 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 
+import javax.annotation.concurrent.ThreadSafe;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Logger;
+import com.google.errorprone.annotations.concurrent.GuardedBy;
 
 /**
  * Calls the {@link Disposable#dispose()} on resources when they become eligible for garbage collection.
  */
+@ThreadSafe
 final class GdxCleaner {
 
     private static final Logger LOG = new Logger(GdxCleaner.class.getName());
 
     private static final GdxCleaner INSTANCE = new GdxCleaner();
 
+    private final Object stateLock = new Object();
+
+    @GuardedBy("stateLock")
     private final ReferenceQueue<Object> garbage = new ReferenceQueue<Object>();
+
+    @GuardedBy("stateLock")
     private final Array<Cleanable> registered = new Array<Cleanable>(false, 8);
 
     private GdxCleaner() {
@@ -35,7 +45,9 @@ final class GdxCleaner {
     public <T> void register(T referent, Disposable cleanup) {
         cleanUp();
 
-        registered.add(new Cleanable(referent, garbage, cleanup));
+        synchronized (stateLock) {
+            registered.add(new Cleanable(referent, garbage, cleanup));
+        }
     }
 
     /**
@@ -43,23 +55,45 @@ final class GdxCleaner {
      * unregistered.
      */
     public int size() {
-        return registered.size;
+        synchronized (stateLock) {
+            return registered.size;
+        }
     }
 
     /** Garbage collect resources that are no longer referenced. */
     public void cleanUp() {
         // Remove dead references
-        for (Iterator<Cleanable> itr = registered.iterator(); itr.hasNext(); ) {
-            Cleanable ref = itr.next();
-            if (ref.get() == null) {
-                itr.remove();
+        synchronized (stateLock) {
+            for (Iterator<Cleanable> itr = registered.iterator(); itr.hasNext(); ) {
+                Cleanable ref = itr.next();
+                if (ref.get() == null) {
+                    itr.remove();
+                }
+            }
+
+            // Clean garbage
+            Reference<?> rawReference;
+            while ((rawReference = garbage.poll()) != null) {
+                CleanupRunnable cleanupRunnable = new CleanupRunnable((Cleanable)rawReference);
+                if (Gdx.app != null) {
+                    Gdx.app.postRunnable(cleanupRunnable);
+                } else {
+                    cleanupRunnable.run();
+                }
             }
         }
+    }
 
-        // Clean garbage
-        Reference<?> rawReference;
-        while ((rawReference = garbage.poll()) != null) {
-            Cleanable cleanable = (Cleanable)rawReference;
+    private static final class CleanupRunnable implements Runnable {
+
+        private final Cleanable cleanable;
+
+        CleanupRunnable(Cleanable cleanable) {
+            this.cleanable = cleanable;
+        }
+
+        @Override
+        public void run() {
             LOG.debug("Disposing resource: " + cleanable);
             try {
                 cleanable.cleanup.dispose();
