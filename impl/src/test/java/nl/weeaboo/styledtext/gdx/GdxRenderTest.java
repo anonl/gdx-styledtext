@@ -28,7 +28,7 @@ import nl.weeaboo.styledtext.layout.LayoutUtil;
 public class GdxRenderTest {
 
     // Allow a small difference in color to account for rounding errors
-    private static final int MAX_COLOR_DIFF = 2;
+    private static final int MAX_COLOR_DIFF = 16;
 
     protected final YDir ydir;
 
