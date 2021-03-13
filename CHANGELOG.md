@@ -1,3 +1,5 @@
+# v5.0.0
+- Upgraded from libGDX 1.9.6 to 1.9.14 (bug fix releases of libGDX contain breaking changes)
 
 # v4.1.0
 - Added additional overloads of `AbstractTextStyle.getAttribute()` to reduce boxing conversions between e.g. `float`/`Float`.

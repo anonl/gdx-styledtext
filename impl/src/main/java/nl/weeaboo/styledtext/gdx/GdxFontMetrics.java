@@ -17,7 +17,7 @@ final class GdxFontMetrics extends AbstractFontMetrics {
     }
 
     private GdxFontMetrics(GdxFont font, float scaleXY) {
-        super(font.getBitmapFont().getSpaceWidth() * scaleXY,
+        super(font.getBitmapFont().getSpaceXadvance() * scaleXY,
                 font.getBitmapFont().getLineHeight() * scaleXY,
                 font.getUnderlineMetrics().scaledCopy(scaleXY));
 
