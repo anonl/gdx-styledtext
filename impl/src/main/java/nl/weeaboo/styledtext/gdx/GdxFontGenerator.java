@@ -18,7 +18,7 @@ public final class GdxFontGenerator {
     private YDir yDir = YDir.UP;
     private boolean incremental = true;
     private int renderCount = 2;
-    private float gamma = 1f;
+    private float gamma = 1.8f;
     private TextureFilter minFilter = TextureFilter.Linear;
     private TextureFilter magFilter = TextureFilter.Linear;
     private boolean monochrome = false;

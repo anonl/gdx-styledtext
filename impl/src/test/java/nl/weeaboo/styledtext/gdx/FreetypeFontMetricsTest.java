@@ -46,14 +46,14 @@ public class FreetypeFontMetricsTest {
     /** Ensure scaling calculations don't change between releases */
     @Test
     public void testScale() {
-        GdxFontMetrics metrics16 = fontStore.getFontMetrics(SERIF_16);
-        Assert.assertEquals(16, metrics16.getPixelSize(), SIZE_EPSILON);
-
-        GdxFontMetrics metrics32 = fontStore.getFontMetrics(SERIF_32);
         /*
          * Generated fonts aren't required to exactly match the requested pixel sizes. This behavior comes
          * from FreeType.
          */
+        GdxFontMetrics metrics16 = fontStore.getFontMetrics(SERIF_16);
+        Assert.assertEquals(17, metrics16.getPixelSize(), SIZE_EPSILON);
+
+        GdxFontMetrics metrics32 = fontStore.getFontMetrics(SERIF_32);
         Assert.assertEquals(31, metrics32.getPixelSize(), SIZE_EPSILON);
     }
 
