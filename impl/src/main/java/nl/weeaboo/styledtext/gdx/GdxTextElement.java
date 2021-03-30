@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout.GlyphRun;
 import com.badlogic.gdx.utils.Align;
@@ -89,6 +90,10 @@ final class GdxTextElement extends TextElement {
     }
 
     public void draw(Batch batch, float dx, float dy, float visibleGlyphs) {
+        draw(batch, dx, dy, visibleGlyphs, Color.WHITE);
+    }
+
+    public void draw(Batch batch, float dx, float dy, float visibleGlyphs, Color tint) {
         if (visibleGlyphs == 0 || glyphLayout.runs.size == 0) {
             return; // Nothing to draw
         }
@@ -97,8 +102,8 @@ final class GdxTextElement extends TextElement {
         {
             if (visibleGlyphs < 0f || visibleGlyphs >= glyphCount) {
                 // Text fully visible
-                drawUnderline(batch, glyphLayout, dx, dy);
-                drawLayout(batch, glyphLayout, dx, dy);
+                drawUnderline(batch, glyphLayout, dx, dy, tint);
+                drawLayout(batch, glyphLayout, dx, dy, tint);
             } else {
                 // Text partially visible
                 int visible = (int)visibleGlyphs;
@@ -121,8 +126,8 @@ final class GdxTextElement extends TextElement {
                 }
                 glyphs.size = visible;
 
-                drawUnderline(batch, glyphLayout, dx, dy);
-                drawLayout(batch, glyphLayout, dx, dy);
+                drawUnderline(batch, glyphLayout, dx, dy, tint);
+                drawLayout(batch, glyphLayout, dx, dy, tint);
 
                 if (isRightToLeft()) {
                     setGlyphs(glyphs, oldGlyphs);
@@ -134,13 +139,18 @@ final class GdxTextElement extends TextElement {
         resetScale();
     }
 
-    private void drawLayout(Batch batch, GlyphLayout glyphLayout, float dx, float dy) {
+    private void drawLayout(Batch batch, GlyphLayout glyphLayout, float dx, float dy, Color tint) {
         BitmapFont bitmapFont = getBitmapFont();
         dy -= bitmapFont.getAscent();
-        bitmapFont.draw(batch, glyphLayout, getX() + dx, getY() + dy);
+
+        BitmapFontCache cache = bitmapFont.getCache();
+        cache.clear();
+        cache.addText(glyphLayout, getX() + dx, getY() + dy);
+        cache.tint(tint);
+        cache.draw(batch);
     }
 
-    private void drawUnderline(Batch batch, GlyphLayout glyphLayout, float dx, float dy) {
+    private void drawUnderline(Batch batch, GlyphLayout glyphLayout, float dx, float dy, Color tint) {
         if (!style.isUnderlined()) {
             // Not underlined -> abort
             return;
@@ -159,15 +169,21 @@ final class GdxTextElement extends TextElement {
         float x = getX() + dx;
         float y = getY() + dy + underlineDy - thickness / 2;
 
-        for (GlyphRun run : glyphLayout.runs) {
-            float runX = run.x + run.xAdvances.get(0);
+        Color oldColor = batch.getColor();
+        try {
+            batch.setColor(tint);
+            for (GlyphRun run : glyphLayout.runs) {
+                float runX = run.x + run.xAdvances.get(0);
 
-            float runWidth = 0f;
-            for (int n = 0; n < run.glyphs.size; n++) {
-                runWidth += run.xAdvances.get(1 + n); // Glyph offsets start at index 1
+                float runWidth = 0f;
+                for (int n = 0; n < run.glyphs.size; n++) {
+                    runWidth += run.xAdvances.get(1 + n); // Glyph offsets start at index 1
+                }
+
+                batch.draw(getBlankTexture(), x + runX, y + run.y, runWidth, thickness);
             }
-
-            batch.draw(getBlankTexture(), x + runX, y + run.y, runWidth, thickness);
+        } finally {
+            batch.setColor(oldColor);
         }
     }
 

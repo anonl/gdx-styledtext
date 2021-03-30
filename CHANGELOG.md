@@ -1,3 +1,7 @@
+
+# v5.1.0
+- Added an optional color tint parm to `GdxFontUtil.draw()`.
+
 # v5.0.0
 - Upgraded from libGDX 1.9.6 to 1.9.14 (bug fix releases of libGDX contain breaking changes)
 

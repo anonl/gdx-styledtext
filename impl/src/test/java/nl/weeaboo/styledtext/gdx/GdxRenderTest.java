@@ -9,6 +9,7 @@ import org.junit.experimental.categories.Category;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
@@ -76,12 +77,12 @@ public class GdxRenderTest {
 
     protected Rectangle renderText(StyledText text, float visibleChars) {
         LayoutParameters params = new LayoutParameters();
-        return renderText(text, visibleChars, params);
+        return renderText(text, visibleChars, Color.WHITE, params);
     }
 
-    protected Rectangle renderText(StyledText text, float visibleChars, LayoutParameters params) {
+    protected Rectangle renderText(StyledText text, float visibleChars, Color tint, LayoutParameters params) {
         ITextLayout layout = layout(text, params);
-        return renderText(layout, visibleChars, params);
+        return renderText(layout, visibleChars, tint, params);
     }
 
     protected ITextLayout layout(StyledText text, LayoutParameters params) {
@@ -93,7 +94,7 @@ public class GdxRenderTest {
         scale = s;
     }
 
-    protected Rectangle renderText(ITextLayout layout, float visibleChars, LayoutParameters params) {
+    protected Rectangle renderText(ITextLayout layout, float visibleChars, Color tint, LayoutParameters params) {
         float th = layout.getTextHeight();
         float tw = layout.getTextWidth();
 
@@ -106,9 +107,10 @@ public class GdxRenderTest {
 
         batch.begin();
         if (params.ydir > 0) {
-            GdxFontUtil.draw(batch, layout, pad - params.x, camera.viewportHeight - pad - th - params.y, visibleChars);
+            GdxFontUtil.draw(batch, layout, pad - params.x, camera.viewportHeight - pad - th - params.y, visibleChars,
+                    tint);
         } else {
-            GdxFontUtil.draw(batch, layout, pad - params.x, pad + th - params.y, visibleChars);
+            GdxFontUtil.draw(batch, layout, pad - params.x, pad + th - params.y, visibleChars, tint);
         }
         batch.end();
 

@@ -4,17 +4,32 @@ import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.PIXEL_32;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32;
 import static nl.weeaboo.styledtext.gdx.TestFreeTypeFontStore.SERIF_32_ITALIC;
 
+import java.io.IOException;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.badlogic.gdx.graphics.Color;
+
 import nl.weeaboo.gdx.test.junit.GdxLwjgl3TestRunner;
 import nl.weeaboo.styledtext.MutableStyledText;
+import nl.weeaboo.styledtext.MutableTextStyle;
 import nl.weeaboo.styledtext.StyledText;
+import nl.weeaboo.styledtext.TextStyle;
 import nl.weeaboo.styledtext.layout.ITextLayout;
 import nl.weeaboo.styledtext.layout.LayoutParameters;
 
 @RunWith(GdxLwjgl3TestRunner.class)
 public class TextRenderTest extends GdxRenderTest {
+
+    private TextStyle red;
+
+    @Before
+    public void before() throws IOException {
+        red = createColoredStyle(0xFFFF0000);
+        fontStore.register(red);
+    }
 
     @Test
     public void emptyString() {
@@ -77,10 +92,22 @@ public class TextRenderTest extends GdxRenderTest {
 
         // Render some mirrorable characters in a right-to-left context
         // - renders as: []()
-        checkRenderResult("right-to-left", renderText(new StyledText("()[]", SERIF_32), -1f, params));
+        checkRenderResult("right-to-left", renderText(new StyledText("()[]", SERIF_32), -1f, Color.WHITE, params));
 
         // - renders as right-aligned @*
-        checkRenderResult("right-to-left-partial", renderText(new StyledText("*@#", SERIF_32), 2f, params));
+        checkRenderResult("right-to-left-partial", renderText(new StyledText("*@#", SERIF_32), 2f, Color.WHITE,
+                params));
+    }
+
+    /** The text can be color tinted */
+    @Test
+    public void colorTint() {
+        MutableStyledText mts = new MutableStyledText();
+        mts.append(new StyledText("A", SERIF_32));
+        mts.append(new StyledText("B", red));
+        mts.append(new StyledText("C", SERIF_32));
+        Color tint = new Color(1f, 0f, 0f, .5f);
+        checkRenderResult("color-tint", renderText(mts.immutableCopy(), -1f, tint, new LayoutParameters()));
     }
 
     @Test
@@ -89,7 +116,7 @@ public class TextRenderTest extends GdxRenderTest {
         params.wrapWidth = 75f;
 
         String text = "A A A A \nA\n A\n  A\n   A\n\tA";
-        checkRenderResult("word-wrap", renderText(new StyledText(text, SERIF_32), -1f, params));
+        checkRenderResult("word-wrap", renderText(new StyledText(text, SERIF_32), -1f, Color.WHITE, params));
     }
 
     /** Whitespace is normally collapsed, but multiple newlines should never be collapsed together. */
@@ -108,13 +135,19 @@ public class TextRenderTest extends GdxRenderTest {
         StyledText text = new StyledText("ABC\nDEF\nGHI", SERIF_32);
         ITextLayout full = layout(text, params);
 
-        checkRenderResult("sublayout0", renderText(full, -1f, params));
+        checkRenderResult("sublayout0", renderText(full, -1f, Color.WHITE, params));
 
         // Sub-layout from line 1+ onwards
-        checkRenderResult("sublayout1", renderText(full.getLineRange(1, 3), -1f, params));
+        checkRenderResult("sublayout1", renderText(full.getLineRange(1, 3), -1f, Color.WHITE, params));
 
         // Sub-sub-layout (generated from another sub-layout)
-        checkRenderResult("sublayout2", renderText(full.getLineRange(1, 3).getLineRange(1, 2), -1f, params));
+        checkRenderResult("sublayout2", renderText(full.getLineRange(1, 3).getLineRange(1, 2), -1f, Color.WHITE, params));
+    }
+
+    private TextStyle createColoredStyle(int argb) {
+        MutableTextStyle mts = SERIF_32.mutableCopy();
+        mts.setColor(argb);
+        return mts.immutableCopy();
     }
 
 }

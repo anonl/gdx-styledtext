@@ -23,6 +23,10 @@ public final class GdxFontUtil {
     }
 
     public static void draw(Batch batch, ITextLayout layout, float dx, float dy, float visibleGlyphs) {
+        draw(batch, layout, dx, dy, visibleGlyphs, Color.WHITE);
+    }
+
+    public static void draw(Batch batch, ITextLayout layout, float dx, float dy, float visibleGlyphs, Color tint) {
         if (visibleGlyphs < 0) {
             visibleGlyphs = 1e9f;
         }
@@ -35,7 +39,7 @@ public final class GdxFontUtil {
             }
 
             GdxTextElement textElem = (GdxTextElement)elem;
-            textElem.draw(batch, dx, dy, visibleGlyphs);
+            textElem.draw(batch, dx, dy, visibleGlyphs, tint);
 
             // Decrease visible glyphs
             visibleGlyphs -= textElem.getGlyphCount();

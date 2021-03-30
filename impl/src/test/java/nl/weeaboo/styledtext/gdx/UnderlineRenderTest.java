@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.badlogic.gdx.graphics.Color;
+
 import nl.weeaboo.gdx.test.junit.GdxLwjgl3TestRunner;
 import nl.weeaboo.styledtext.MutableStyledText;
 import nl.weeaboo.styledtext.MutableTextStyle;
@@ -61,7 +63,8 @@ public class UnderlineRenderTest extends GdxRenderTest {
         LayoutParameters params = new LayoutParameters();
         params.isRightToLeft = true;
         // - renders as right-aligned @*
-        checkRenderResult("underline-partial3", renderText(new StyledText("*@#", underlineStyle), 2f, params));
+        checkRenderResult("underline-partial3", renderText(new StyledText("*@#", underlineStyle), 2f, Color.WHITE,
+                params));
     }
 
 }
